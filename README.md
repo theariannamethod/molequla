@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.jpg" alt="molequla" width="280">
+  <img src="logo.jpg" alt="molequla" width="400">
 </p>
 
 <h1 align="center">molequla</h1>
