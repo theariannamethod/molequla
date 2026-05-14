@@ -5,8 +5,8 @@ package main
 #cgo LDFLAGS: -lm -lpthread
 #cgo darwin CFLAGS: -DUSE_BLAS -DACCELERATE -DACCELERATE_NEW_LAPACK
 #cgo darwin LDFLAGS: -framework Accelerate
-#cgo linux CFLAGS: -DUSE_BLAS -I/usr/include/x86_64-linux-gnu/openblas-pthread/
-#cgo linux LDFLAGS: -L/usr/lib/x86_64-linux-gnu/openblas-pthread/ -lopenblas
+#cgo linux CFLAGS: -DUSE_BLAS -DUSE_CUDA -I/usr/include/x86_64-linux-gnu/openblas-pthread/ -I/usr/local/cuda/include
+#cgo linux LDFLAGS: -L/usr/lib/x86_64-linux-gnu/openblas-pthread/ -lopenblas ${SRCDIR}/ariannamethod/notorch_cuda.o -L/usr/local/cuda/lib64 -lcudart -lcublas -lstdc++
 #include "ariannamethod.h"
 #include "ariannamethod.c"
 
