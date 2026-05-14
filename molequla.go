@@ -4284,6 +4284,16 @@ func GenerateResonant(model *GPT, tok *EvolvingTokenizer, field *CooccurField, p
 	// chosen token via MetaweightsOverlayCollapse after sample.
 	var prophecyField []float64
 
+	// Overlay scratch — reused across every step of this generation call so
+	// the hot path allocates zero per-token vocab-sized slices. Destiny + Unigram
+	// computed once here (weights stable under model.mu, field stable under
+	// short read-lock). See codex P1 audit 2026-05-14.
+	var overlayScratch *OverlayScratch
+	if CFG.CorpusLogitOverlay && field != nil {
+		overlayScratch = NewOverlayScratch(tok.VocabSize)
+		overlayScratch.PrepareStatic(model, field)
+	}
+
 	for step := 0; step < CFG.MaxGenTokens; step++ {
 		pos := len(ids) - 1
 		if pos > model.BlockSize-1 {
@@ -4364,7 +4374,7 @@ func GenerateResonant(model *GPT, tok *EvolvingTokenizer, field *CooccurField, p
 			// seeded embeddings push mag to ~0.25, so 0.1 too low here. 1.0 keeps
 			// the bootstrap window open until real gradient training lifts mag.
 			untrainedRegime = tmag <= 1.0
-			overlaidLogits, prophecyField = MetaweightsOverlay(overlaidLogits, ids, field, model, prophecyField)
+			overlaidLogits, prophecyField = MetaweightsOverlay(overlaidLogits, ids, field, model, prophecyField, overlayScratch)
 			MetaweightsRepetitionPenalty(overlaidLogits, ids)
 		}
 

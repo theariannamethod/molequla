@@ -15,10 +15,10 @@ import "math"
 // the overlay dominates and produces coherent output. As weights strengthen,
 // overlay fades, ceding to model voice. Q's auto-curriculum.
 //
-// This is the load-bearing fix for the regression where Phase B used
-// math.Log(prob) instead of raw prob and multiplied by coefficients 15/10,
-// which created -30 to -200 logit penalties that swamped untrained model
-// logits in the wrong direction — every previous run output gibberish.
+// Scratch reuse: a single OverlayScratch is constructed once per
+// GenerateResonant call and threaded into every per-step overlay invocation.
+// Per-step allocations dropped from six [V]float64 slices to zero — material
+// over a multi-hour ecology run on a CPU pod (codex P1, 2026-05-14).
 // ═══════════════════════════════════════════════════════════════════════════════
 
 // MetaCoeffs holds the five Dario-field overlay coefficients for one regime.
@@ -39,37 +39,166 @@ var (
 // force until real training raises mag past 1.0 (smooth gate at tg=0.5).
 const metaTFGateThreshold = 1.0
 
+// OverlayScratch holds reusable [V]float64 buffers + cached static terms
+// (destiny, unigram) for one GenerateResonant call. Per-step bigram/trigram/
+// hebbian buffers are reset only at indices that were touched the previous
+// step; destiny + unigram are computed once at construction and not touched
+// per step because they do not change while weights are locked and the field
+// is not mutated during generation.
+//
+// Construct with NewOverlayScratch(V) at the start of generation and call
+// PrepareStatic(model, field) once before the per-token loop. Pass into
+// MetaweightsOverlay each step.
+type OverlayScratch struct {
+	V int
+
+	// Per-step buffers — reset by clearTouched at the start of each call.
+	Bigram   []float64
+	Trigram  []float64
+	Hebbian  []float64
+	Prophecy []float64
+
+	// Static-per-generation buffers — filled once by PrepareStatic.
+	Unigram   []float64
+	Destiny   []float64
+	staticSet bool
+
+	// Index trackers for sparse reset. Per-step we only zero positions we
+	// wrote into; full make() is gone.
+	touchedBigram   []int
+	touchedTrigram  []int
+	touchedHebbian  []int
+	touchedProphecy []int
+}
+
+// NewOverlayScratch allocates a scratch struct for vocab size V.
+func NewOverlayScratch(V int) *OverlayScratch {
+	if V <= 0 {
+		return &OverlayScratch{V: 0}
+	}
+	return &OverlayScratch{
+		V:        V,
+		Bigram:   make([]float64, V),
+		Trigram:  make([]float64, V),
+		Hebbian:  make([]float64, V),
+		Prophecy: make([]float64, V),
+		Unigram:  make([]float64, V),
+		Destiny:  make([]float64, V),
+	}
+}
+
+// PrepareStatic fills Unigram and Destiny once for this generation call.
+// Caller holds model.mu so wte is stable; field is read-locked locally only
+// for the unigram snapshot.
+func (s *OverlayScratch) PrepareStatic(model *GPT, field *CooccurField) {
+	if s == nil || s.V == 0 {
+		return
+	}
+	V := s.V
+
+	// Unigram — snapshot under short read lock, then unlock for the heavy
+	// destiny work. The lock window is now O(|field.Unigram|) instead of
+	// covering the per-token call's full body.
+	for i := range s.Unigram {
+		s.Unigram[i] = 0
+	}
+	if field != nil {
+		field.mu.RLock()
+		var uniTotal float64
+		for _, v := range field.Unigram {
+			uniTotal += v
+		}
+		if uniTotal > 0 {
+			for tid, v := range field.Unigram {
+				if tid < V {
+					s.Unigram[tid] = v / uniTotal
+				}
+			}
+		}
+		field.mu.RUnlock()
+	}
+
+	// Destiny — cosine(wte[i], gammaDir). Weights are stable for the
+	// generation call, so we compute once instead of every token.
+	for i := range s.Destiny {
+		s.Destiny[i] = 0
+	}
+	if model != nil {
+		if gammaDir, mag := model.GammaContrastiveProjection(); mag > 0 && len(gammaDir) > 0 {
+			if wte := model.Base["wte"]; wte != nil {
+				D := wte.Nin
+				if D > 0 && D <= len(gammaDir) {
+					for v := 0; v < V && v < wte.Nout; v++ {
+						row := wte.Rows[v].Data
+						var dot, en float64
+						for d := 0; d < D; d++ {
+							dot += gammaDir[d] * row[d]
+							en += row[d] * row[d]
+						}
+						en = math.Sqrt(en + 1e-10)
+						if en > 1e-8 {
+							s.Destiny[v] = dot / en
+						}
+					}
+				}
+			}
+		}
+	}
+	s.staticSet = true
+}
+
+// clearTouched zeroes only the indices the previous step wrote into and
+// resets touched lists. Sparse reset — vocab-wide loops gone.
+func (s *OverlayScratch) clearTouched() {
+	for _, i := range s.touchedBigram {
+		s.Bigram[i] = 0
+	}
+	s.touchedBigram = s.touchedBigram[:0]
+	for _, i := range s.touchedTrigram {
+		s.Trigram[i] = 0
+	}
+	s.touchedTrigram = s.touchedTrigram[:0]
+	for _, i := range s.touchedHebbian {
+		s.Hebbian[i] = 0
+	}
+	s.touchedHebbian = s.touchedHebbian[:0]
+	for _, i := range s.touchedProphecy {
+		s.Prophecy[i] = 0
+	}
+	s.touchedProphecy = s.touchedProphecy[:0]
+}
+
 // MetaweightsOverlay applies the Q-style dynamic logit overlay in place on
 // `logits` (model's raw pre-temperature logits over the vocabulary).
 //
-//   - `ids` — the running token context for this generation step (last token
-//     is the immediate predecessor of the position we're predicting).
+//   - `ids` — the running token context for this generation step.
 //   - `field` — the organism's CooccurField (must not be nil).
-//   - `model` — used for destiny term (purpose direction projected onto wte).
+//   - `model` — used for destiny term (cached in scratch).
 //   - `prophecyField` — persistent expectation field; nil means «not yet seeded».
-//     The caller owns this slice and re-passes it across steps for age + collapse.
-//   - Returns the modified logits slice (same backing array — caller can use
-//     it directly for softmax) and the (possibly seeded) prophecy field.
+//   - `scratch` — reusable buffers (created once per GenerateResonant call).
+//   - Returns the modified logits slice + the (possibly seeded) prophecy field.
 //
-// Mechanism (mirrors postgpt_q.c:1354-1395 step-for-step):
-//  1. Compute tmag = mean(|logits|). If tmag > 0.1 → trained coeffs, else weightless.
-//  2. Look up bigram[prev][i], trigram[prev2,prev1][i], normalised per-context.
-//  3. Aggregate Hebbian window counts over recent CooccurWindowSize ctx tokens.
-//  4. Seed/age prophecy field, take prophecy[i] as bias.
-//  5. Project wte rows onto gamma direction (destiny[i] = cosine).
-//  6. logits[i] += c_heb*heb[i] + c_pro*pro[i] + c_ds*ds[i] + c_bg*bg[i] + c_tg*tg[i].
-//  7. Unigram damping: very rare tokens get -2.0 penalty, common tokens get
-//     linear suppression — mirror postgpt_q.c:1393-1394.
+// Mechanism mirrors postgpt_q.c:1354-1395.
 func MetaweightsOverlay(
 	logits []float64,
 	ids []int,
 	field *CooccurField,
 	model *GPT,
 	prophecyField []float64,
+	scratch *OverlayScratch,
 ) ([]float64, []float64) {
 	V := len(logits)
 	if V == 0 || field == nil || len(ids) < 1 {
 		return logits, prophecyField
+	}
+
+	// Use a fallback scratch if the caller forgot to pass one. Allocation
+	// only on the cold path — production callers always pass scratch.
+	if scratch == nil || scratch.V != V {
+		scratch = NewOverlayScratch(V)
+		scratch.PrepareStatic(model, field)
+	} else {
+		scratch.clearTouched()
 	}
 
 	// 1. Magnitude gate — pick coefficient bundle.
@@ -87,12 +216,9 @@ func MetaweightsOverlay(
 		coeffs = metaCoeffsTrained
 	}
 
-	// 1.5. Transformer gate — silence untrained transformer logits before overlay.
-	// Mirror of pitomadom.c:583-586 / q/README.md:31 — Q's signature trick that
-	// lets metaweights drive coherence at zero training. Untrained: mean|logit|
-	// ~0.1-0.5 → tg≈0 → transformer logits zeroed → overlay owns the signal.
-	// Trained: mean|logit| ~2.0+ → tg≈1 → transformer speaks, overlay fades to
-	// its trained-mode small coefficients (already picked above).
+	// 1.5. Transformer gate — silence untrained transformer logits before
+	// overlay (pitomadom.c:583-586). Untrained: mean|logit| < 0.5 → tg≈0 →
+	// transformer silent → overlay owns the signal.
 	tg := (tmag - 0.5) / 1.5
 	if tg < 0 {
 		tg = 0
@@ -103,9 +229,9 @@ func MetaweightsOverlay(
 		logits[i] *= tg
 	}
 
-	// 2. Bigram + trigram per-context — normalised probabilities.
-	bigramProb := make([]float64, V)
-	trigramProb := make([]float64, V)
+	// 2. Bigram + trigram per-context — normalised probabilities written
+	// sparsely into scratch.Bigram / scratch.Trigram. Only positions with
+	// non-zero context get touched (then zeroed again at the next step).
 	field.mu.RLock()
 	prev := ids[len(ids)-1]
 	if ctx, ok := field.BigramByFirst[prev]; ok {
@@ -116,7 +242,8 @@ func MetaweightsOverlay(
 		if total > 0 {
 			for tid, v := range ctx {
 				if tid < V {
-					bigramProb[tid] = v / total
+					scratch.Bigram[tid] = v / total
+					scratch.touchedBigram = append(scratch.touchedBigram, tid)
 				}
 			}
 		}
@@ -131,15 +258,15 @@ func MetaweightsOverlay(
 			if total > 0 {
 				for tid, v := range ctx {
 					if tid < V {
-						trigramProb[tid] = v / total
+						scratch.Trigram[tid] = v / total
+						scratch.touchedTrigram = append(scratch.touchedTrigram, tid)
 					}
 				}
 			}
 		}
 	}
 
-	// 3. Hebbian — window-walked co-occurrence, max-normalised (postgpt_q.c:196).
-	hebbianStrength := make([]float64, V)
+	// 3. Hebbian — window-walked co-occurrence, max-normalised.
 	windowSize := CFG.CooccurWindowSize
 	if windowSize <= 0 || windowSize > len(ids) {
 		windowSize = len(ids)
@@ -149,44 +276,35 @@ func MetaweightsOverlay(
 		if neighbors, ok := field.CooccurWindow[ids[j]]; ok {
 			for tid, cnt := range neighbors {
 				if tid < V {
-					hebbianStrength[tid] += cnt
-					if hebbianStrength[tid] > hebMax {
-						hebMax = hebbianStrength[tid]
+					if scratch.Hebbian[tid] == 0 {
+						scratch.touchedHebbian = append(scratch.touchedHebbian, tid)
+					}
+					scratch.Hebbian[tid] += cnt
+					if scratch.Hebbian[tid] > hebMax {
+						hebMax = scratch.Hebbian[tid]
 					}
 				}
 			}
 		}
 	}
-	if hebMax > 0 {
-		for i := range hebbianStrength {
-			hebbianStrength[i] /= hebMax
-		}
-	}
-
-	// 4. Unigram for damping pass.
-	unigramProb := make([]float64, V)
-	var uniTotal float64
-	for _, v := range field.Unigram {
-		uniTotal += v
-	}
-	if uniTotal > 0 {
-		for tid, v := range field.Unigram {
-			if tid < V {
-				unigramProb[tid] = v / uniTotal
-			}
-		}
-	}
 	field.mu.RUnlock()
+	if hebMax > 0 {
+		for _, i := range scratch.touchedHebbian {
+			scratch.Hebbian[i] /= hebMax
+		}
+	}
 
-	// 5. Prophecy — seed once, then age per step.
-	prophecyProb := make([]float64, V)
+	// 4. Prophecy — seed once, then age per step. Normalised values land
+	// in scratch.Prophecy (zeroed via touchedProphecy each step).
 	if prophecyField == nil {
 		prophecyField = make([]float64, V)
 		// Seed from trigram (primary) + half-weight bigram fallback.
-		for i := 0; i < V; i++ {
-			prophecyField[i] = trigramProb[i] + 0.5*bigramProb[i]
+		for _, i := range scratch.touchedTrigram {
+			prophecyField[i] += scratch.Trigram[i]
 		}
-		// Normalise.
+		for _, i := range scratch.touchedBigram {
+			prophecyField[i] += 0.5 * scratch.Bigram[i]
+		}
 		var pt float64
 		for _, v := range prophecyField {
 			pt += v
@@ -213,51 +331,39 @@ func MetaweightsOverlay(
 			pt += v
 		}
 		if pt > 0 {
+			inv := 1.0 / pt
 			for i := 0; i < V && i < len(prophecyField); i++ {
-				prophecyProb[i] = prophecyField[i] / pt
-			}
-		}
-	}
-
-	// 6. Destiny — cosine(wte[i], gammaDir). Lazy compute once would be nicer
-	// but Q recomputes per step from current destiny vector. Mirror that.
-	destinyScore := make([]float64, V)
-	if model != nil {
-		if gammaDir, mag := model.GammaContrastiveProjection(); mag > 0 && len(gammaDir) > 0 {
-			if wte := model.Base["wte"]; wte != nil {
-				D := wte.Nin
-				if D > 0 && D <= len(gammaDir) {
-					for v := 0; v < V && v < wte.Nout; v++ {
-						row := wte.Rows[v].Data
-						var dot, en float64
-						for d := 0; d < D; d++ {
-							dot += gammaDir[d] * row[d]
-							en += row[d] * row[d]
-						}
-						en = math.Sqrt(en + 1e-10)
-						if en > 1e-8 {
-							destinyScore[v] = dot / en
-						}
-					}
+				p := prophecyField[i] * inv
+				if p != 0 {
+					scratch.Prophecy[i] = p
+					scratch.touchedProphecy = append(scratch.touchedProphecy, i)
 				}
 			}
 		}
 	}
 
-	// 7. The actual overlay — Q's line 1383, raw values:
+	// 5. Static terms are already in scratch.Destiny + scratch.Unigram
+	// (filled once by PrepareStatic). Fall-through computation if caller
+	// gave a fresh scratch without PrepareStatic — handled at top of fn.
+	if !scratch.staticSet {
+		scratch.PrepareStatic(model, field)
+	}
+
+	// 6. The actual overlay — Q's line 1383, raw values:
 	//    raw[i] += c_heb*heb[i] + c_pro*pro[i] + c_ds*ds + c_bg*bg + c_tg*tg
 	for i := 0; i < V; i++ {
-		logits[i] += coeffs.Heb*hebbianStrength[i] +
-			coeffs.Pro*prophecyProb[i] +
-			coeffs.Ds*destinyScore[i] +
-			coeffs.Bg*bigramProb[i] +
-			coeffs.Tg*trigramProb[i]
+		logits[i] += coeffs.Heb*scratch.Hebbian[i] +
+			coeffs.Pro*scratch.Prophecy[i] +
+			coeffs.Ds*scratch.Destiny[i] +
+			coeffs.Bg*scratch.Bigram[i] +
+			coeffs.Tg*scratch.Trigram[i]
 
 		// Unigram damping (postgpt_q.c:1393-1394) — suppress noise tokens.
-		if unigramProb[i] < 1e-6 {
+		u := scratch.Unigram[i]
+		if u < 1e-6 {
 			logits[i] -= 2.0
-		} else if unigramProb[i] > 0.01 {
-			logits[i] -= 0.3 * (unigramProb[i] - 0.01) * 100.0
+		} else if u > 0.01 {
+			logits[i] -= 0.3 * (u - 0.01) * 100.0
 		}
 	}
 
@@ -265,8 +371,7 @@ func MetaweightsOverlay(
 }
 
 // MetaweightsOverlayCollapse zeroes the prophecy slot for a token that was
-// just sampled — Q's «collapse on fulfilment» pattern. Called from the
-// generation loop after sampling each token. nil-safe.
+// just sampled — Q's «collapse on fulfilment» pattern. nil-safe.
 func MetaweightsOverlayCollapse(prophecyField []float64, sampledID int) {
 	if prophecyField != nil && sampledID >= 0 && sampledID < len(prophecyField) {
 		prophecyField[sampledID] = 0
@@ -277,34 +382,45 @@ func MetaweightsOverlayCollapse(prophecyField []float64, sampledID int) {
 // + bigram blocking on raw logits AFTER the metaweights overlay. Mirror of
 // postgpt.c:960-967 and postgpt_q.c:1407-1408.
 //
-//   - Distinct tokens in the last 12 ids: logits[t] *= 0.5. Uniform
-//     damping kills lock-in («The most of the most of the most...») by
-//     suppressing recently-emitted tokens equally, not on a graded curve
-//     that left the very last token only 33% suppressed.
+//   - Distinct tokens in the last 12 ids: logits[t] *= 0.5 (uniform).
 //   - Bigram blocking (cl >= 2): for every position where ctx[i]==ctx[cl-2],
 //     penalise ctx[i+1] by 0.2. Kills two-token cycles.
 //
-// Logits are mutated in place.
+// Dedupe uses a fixed [12]int linear scan — zero heap alloc per step
+// (codex P3, 2026-05-14).
 func MetaweightsRepetitionPenalty(logits []float64, ids []int) {
 	V := len(logits)
 	cl := len(ids)
 	if V == 0 || cl == 0 {
 		return
 	}
-	// Uniform multiplicative penalty over last 12 ctx tokens.
 	start := cl - 12
 	if start < 0 {
 		start = 0
 	}
-	seen := make(map[int]bool, 12)
+	var seen [12]int
+	seenN := 0
 	for ri := cl - 1; ri >= start; ri-- {
 		t := ids[ri]
-		if t >= 0 && t < V && !seen[t] {
-			logits[t] *= 0.5
-			seen[t] = true
+		if t < 0 || t >= V {
+			continue
+		}
+		dup := false
+		for i := 0; i < seenN; i++ {
+			if seen[i] == t {
+				dup = true
+				break
+			}
+		}
+		if dup {
+			continue
+		}
+		logits[t] *= 0.5
+		if seenN < 12 {
+			seen[seenN] = t
+			seenN++
 		}
 	}
-	// Bigram blocking — postgpt_q.c:1407-1408.
 	if cl >= 2 {
 		last := ids[cl-2]
 		for ri := 0; ri < cl-1; ri++ {
