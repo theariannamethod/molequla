@@ -1,0 +1,94 @@
+[05:25:50] === starting cell_extended_full_coherence_90min DUR=5400s ===
+[05:40:51] === midrun status ===
+  earth: lines=266 dna=14 spa-gate=0
+0 mit=0
+0 last= rss_kb=308396
+  air: lines=265 dna=12 spa-gate=0
+0 mit=0
+0 last= rss_kb=295356
+  water: lines=264 dna=11 spa-gate=0
+0 mit=0
+0 last= rss_kb=291092
+  fire: lines=268 dna=15 spa-gate=0
+0 mit=0
+0 last= rss_kb=284996
+[05:55:52] === midrun status ===
+  earth: lines=278 dna=22 spa-gate=0
+0 mit=0
+0 last= rss_kb=315364
+  air: lines=277 dna=21 spa-gate=0
+0 mit=0
+0 last= rss_kb=334076
+  water: lines=279 dna=23 spa-gate=0
+0 mit=0
+0 last= rss_kb=291324
+  fire: lines=284 dna=26 spa-gate=0
+0 mit=0
+0 last= rss_kb=306572
+[06:10:54] === midrun status ===
+  earth: lines=302 dna=38 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=349228
+  air: lines=299 dna=36 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=359264
+  water: lines=300 dna=37 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=329776
+  fire: lines=309 dna=41 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=344020
+[06:25:55] === midrun status ===
+  earth: lines=320 dna=52 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=356220
+  air: lines=321 dna=52 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=366048
+  water: lines=323 dna=54 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=357216
+  fire: lines=327 dna=56 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=368944
+[06:40:57] === midrun status ===
+  earth: lines=338 dna=65 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=387020
+  air: lines=339 dna=66 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=366228
+  water: lines=344 dna=68 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=373020
+  fire: lines=349 dna=71 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=393668
+[06:55:57] === midrun status ===
+  earth: lines=363 dna=82 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=402292
+  air: lines=346 dna=70 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=366048
+  water: lines=373 dna=88 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=401480
+  fire: lines=374 dna=89 spa-gate=0
+0 mit=0
+0 last=stage=2 rss_kb=402904
+[06:55:58] === killing cell_extended_full_coherence_90min organisms ===
+[06:56:01] === FINAL ===
+FINAL earth: lines=365 dna=82 spa-gate=0
+0 mit=0
+0 last=stage=2
+FINAL air: lines=348 dna=70 spa-gate=0
+0 mit=0
+0 last=stage=2
+FINAL water: lines=376 dna=89 spa-gate=0
+0 mit=0
+0 last=stage=2
+FINAL fire: lines=376 dna=89 spa-gate=0
+0 mit=0
+0 last=stage=2
+=== ALL DONE at 06:56:01 ===

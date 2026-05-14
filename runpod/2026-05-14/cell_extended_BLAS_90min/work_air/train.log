@@ -1,0 +1,348 @@
+[ecology] Element: air → corpus: nonames_air.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[init] Stage 0 (embryo): embd=16, layer=1, head=1 — warmup 400 steps (400 backprop + 0 notorch, sqrt-scaled 1x)
+  [aml] step 0/160 | loss 6.6661 (avg 6.6661) | lr 0.001000 | seq 8
+  [aml] step 10/160 | loss 6.2517 (avg 6.4547) | lr 0.001450 | seq 8
+  [aml] step 20/160 | loss 6.4909 (avg 6.3785) | lr 0.001900 | seq 8
+  [aml] step 30/160 | loss 6.1983 (avg 6.2719) | lr 0.002350 | seq 8
+  [aml] step 40/160 | loss 5.2868 (avg 6.1187) | lr 0.002800 | seq 8
+  [aml] step 50/160 | loss 4.5217 (avg 5.9659) | lr 0.003250 | seq 8
+  [aml] step 60/160 | loss 4.0373 (avg 5.7864) | lr 0.003700 | seq 8
+  [aml] step 70/160 | loss 4.4053 (avg 5.6392) | lr 0.004150 | seq 8
+  [aml] step 80/160 | loss 4.8111 (avg 5.4885) | lr 0.004600 | seq 8
+  [aml] step 90/160 | loss 4.4368 (avg 5.3757) | lr 0.005050 | seq 8
+  [aml] step 100/160 | loss 3.3246 (avg 5.2976) | lr 0.005500 | seq 8
+  [aml] step 110/160 | loss 4.5302 (avg 5.2255) | lr 0.005950 | seq 8
+  [aml] step 120/160 | loss 4.2955 (avg 5.1536) | lr 0.006400 | seq 8
+  [aml] step 130/160 | loss 4.8289 (avg 5.1140) | lr 0.006850 | seq 8
+  [aml] step 140/160 | loss 3.3982 (avg 5.0441) | lr 0.007300 | seq 8
+  [aml] step 150/160 | loss 4.8100 (avg 5.0021) | lr 0.007750 | seq 8
+[aml] training complete: 160 steps, avg loss 4.9483 (memory freed)
+  [aml] step 0/120 | loss 4.3630 (avg 4.3630) | lr 0.008200 | seq 16
+  [aml] step 10/120 | loss 5.8407 (avg 4.7662) | lr 0.008650 | seq 16
+  [aml] step 20/120 | loss 4.5844 (avg 4.5066) | lr 0.009100 | seq 16
+  [aml] step 30/120 | loss 4.1781 (avg 4.4381) | lr 0.009550 | seq 16
+  [aml] step 40/120 | loss 4.3467 (avg 4.4702) | lr 0.010000 | seq 16
+  [aml] step 50/120 | loss 3.3863 (avg 4.4152) | lr 0.010000 | seq 16
+  [aml] step 60/120 | loss 3.3252 (avg 4.3029) | lr 0.010000 | seq 16
+  [aml] step 70/120 | loss 3.2857 (avg 4.2434) | lr 0.010000 | seq 16
+  [aml] step 80/120 | loss 2.9121 (avg 4.1673) | lr 0.009999 | seq 16
+  [aml] step 90/120 | loss 4.3735 (avg 4.1325) | lr 0.009999 | seq 16
+  [aml] step 100/120 | loss 2.7217 (avg 4.1172) | lr 0.009999 | seq 16
+  [aml] step 110/120 | loss 3.8548 (avg 4.0686) | lr 0.009999 | seq 16
+[aml] training complete: 120 steps, avg loss 4.0746 (memory freed)
+  [aml] step 0/120 | loss 4.4802 (avg 4.4802) | lr 0.009999 | seq 32
+  [aml] step 10/120 | loss 3.9237 (avg 4.2893) | lr 0.009999 | seq 32
+  [aml] step 20/120 | loss 3.2933 (avg 4.1827) | lr 0.009999 | seq 32
+  [aml] step 30/120 | loss 3.8800 (avg 4.1016) | lr 0.009999 | seq 32
+  [aml] step 40/120 | loss 3.5597 (avg 4.0075) | lr 0.009999 | seq 32
+  [aml] step 50/120 | loss 4.0143 (avg 3.9202) | lr 0.009999 | seq 32
+  [aml] step 60/120 | loss 3.9416 (avg 3.8343) | lr 0.009999 | seq 32
+  [aml] step 70/120 | loss 4.7043 (avg 3.8406) | lr 0.009999 | seq 32
+  [aml] step 80/120 | loss 3.2468 (avg 3.8313) | lr 0.009999 | seq 32
+  [aml] step 90/120 | loss 2.1161 (avg 3.7592) | lr 0.009999 | seq 32
+  [aml] step 100/120 | loss 3.8914 (avg 3.6841) | lr 0.009999 | seq 32
+  [aml] step 110/120 | loss 2.3603 (avg 3.6667) | lr 0.009999 | seq 32
+[aml] training complete: 120 steps, avg loss 3.6384 (memory freed)
+
+[stage 0 — embryo] What it sounds like now:
+  Q: Hello.
+  A: Both are the the concept of the concept of the the concept of the the concept of the concept of the the concept of the concept of the concept of the concept of the concept of the concept of the concept of the the the concept of the concept of the concept of the concept of a the concept of the concept of the concept of the concept of the concept of the concept of the concept of a the concept of a the concept of a the in the
+  Q: Who are you?
+  A: ...
+  Q: What do you know?
+  A: ...
+
+[growth] ONTOGENESIS: stage 0 -> 1
+  embd: 16 -> 32, layer: 1 -> 1, head: 1 -> 2
+[growth] Done. Freeze for 500 steps.
+[init] Stage 1 (infant): embd=32, layer=1, head=2 — warmup 800 steps (800 backprop + 0 notorch, sqrt-scaled 2x)
+  [aml] step 0/320 | loss 4.6676 (avg 4.6676) | lr 0.000500 | seq 8
+  [aml] step 10/320 | loss 5.8077 (avg 4.1968) | lr 0.000725 | seq 8
+  [aml] step 20/320 | loss 3.3497 (avg 4.0738) | lr 0.000950 | seq 8
+  [aml] step 30/320 | loss 3.5045 (avg 3.8827) | lr 0.001175 | seq 8
+  [aml] step 40/320 | loss 4.9620 (avg 3.8358) | lr 0.001400 | seq 8
+  [aml] step 50/320 | loss 3.2424 (avg 3.7535) | lr 0.001625 | seq 8
+  [aml] step 60/320 | loss 1.7010 (avg 3.7939) | lr 0.001850 | seq 8
+  [aml] step 70/320 | loss 3.2008 (avg 3.7599) | lr 0.002075 | seq 8
+  [aml] step 80/320 | loss 3.1889 (avg 3.7998) | lr 0.002300 | seq 8
+  [aml] step 90/320 | loss 2.8218 (avg 3.8369) | lr 0.002525 | seq 8
+  [aml] step 100/320 | loss 3.2375 (avg 3.8438) | lr 0.002750 | seq 8
+  [aml] step 110/320 | loss 2.7937 (avg 3.8058) | lr 0.002975 | seq 8
+  [aml] step 120/320 | loss 3.6644 (avg 3.8115) | lr 0.003200 | seq 8
+  [aml] step 130/320 | loss 5.3915 (avg 3.8459) | lr 0.003425 | seq 8
+  [aml] step 140/320 | loss 4.0015 (avg 3.8408) | lr 0.003650 | seq 8
+  [aml] step 150/320 | loss 2.9806 (avg 3.8103) | lr 0.003875 | seq 8
+  [aml] step 160/320 | loss 4.9448 (avg 3.8013) | lr 0.004100 | seq 8
+  [aml] step 170/320 | loss 2.4996 (avg 3.7719) | lr 0.004325 | seq 8
+  [aml] step 180/320 | loss 4.1942 (avg 3.7559) | lr 0.004550 | seq 8
+  [aml] step 190/320 | loss 0.9716 (avg 3.7748) | lr 0.004775 | seq 8
+  [aml] step 200/320 | loss 4.8238 (avg 3.8037) | lr 0.004998 | seq 8
+  [aml] step 210/320 | loss 3.9334 (avg 3.8149) | lr 0.004998 | seq 8
+  [aml] step 220/320 | loss 3.8101 (avg 3.8045) | lr 0.004998 | seq 8
+  [aml] step 230/320 | loss 4.3997 (avg 3.7964) | lr 0.004998 | seq 8
+  [aml] step 240/320 | loss 5.0607 (avg 3.7803) | lr 0.004998 | seq 8
+  [aml] step 250/320 | loss 4.3617 (avg 3.7646) | lr 0.004998 | seq 8
+  [aml] step 260/320 | loss 2.7234 (avg 3.7493) | lr 0.004998 | seq 8
+  [aml] step 270/320 | loss 2.2325 (avg 3.7528) | lr 0.004998 | seq 8
+  [aml] step 280/320 | loss 4.4163 (avg 3.7339) | lr 0.004998 | seq 8
+  [aml] step 290/320 | loss 4.4562 (avg 3.7463) | lr 0.004998 | seq 8
+  [aml] step 300/320 | loss 2.0777 (avg 3.7243) | lr 0.004998 | seq 8
+  [aml] step 310/320 | loss 4.2772 (avg 3.7303) | lr 0.004998 | seq 8
+[aml] training complete: 320 steps, avg loss 3.7391 (memory freed)
+  [aml] step 0/240 | loss 3.7016 (avg 3.7016) | lr 0.004998 | seq 16
+  [aml] step 10/240 | loss 3.8850 (avg 3.7660) | lr 0.004998 | seq 16
+  [aml] step 20/240 | loss 2.3910 (avg 3.6634) | lr 0.004998 | seq 16
+  [aml] step 30/240 | loss 4.3570 (avg 3.7517) | lr 0.004998 | seq 16
+  [aml] step 40/240 | loss 3.6322 (avg 3.7929) | lr 0.004997 | seq 16
+  [aml] step 50/240 | loss 4.1793 (avg 3.7449) | lr 0.004997 | seq 16
+  [aml] step 60/240 | loss 3.5475 (avg 3.7580) | lr 0.004997 | seq 16
+  [aml] step 70/240 | loss 3.8432 (avg 3.7775) | lr 0.004997 | seq 16
+  [aml] step 80/240 | loss 3.7288 (avg 3.7525) | lr 0.004997 | seq 16
+  [aml] step 90/240 | loss 3.7495 (avg 3.7857) | lr 0.004997 | seq 16
+  [aml] step 100/240 | loss 4.0390 (avg 3.7928) | lr 0.004997 | seq 16
+  [aml] step 110/240 | loss 4.1760 (avg 3.7774) | lr 0.004997 | seq 16
+  [aml] step 120/240 | loss 3.8600 (avg 3.7734) | lr 0.004997 | seq 16
+  [aml] step 130/240 | loss 3.7165 (avg 3.7548) | lr 0.004997 | seq 16
+  [aml] step 140/240 | loss 2.3992 (avg 3.7336) | lr 0.004997 | seq 16
+  [aml] step 150/240 | loss 4.7088 (avg 3.7298) | lr 0.004997 | seq 16
+  [aml] step 160/240 | loss 3.3331 (avg 3.7268) | lr 0.004997 | seq 16
+  [aml] step 170/240 | loss 3.9627 (avg 3.7300) | lr 0.004996 | seq 16
+  [aml] step 180/240 | loss 4.6879 (avg 3.7409) | lr 0.004996 | seq 16
+  [aml] step 190/240 | loss 3.2450 (avg 3.7344) | lr 0.004996 | seq 16
+  [aml] step 200/240 | loss 4.9709 (avg 3.7309) | lr 0.004996 | seq 16
+  [aml] step 210/240 | loss 3.8587 (avg 3.7183) | lr 0.004996 | seq 16
+  [aml] step 220/240 | loss 2.5618 (avg 3.6957) | lr 0.004996 | seq 16
+  [aml] step 230/240 | loss 3.6761 (avg 3.6806) | lr 0.004996 | seq 16
+[aml] training complete: 240 steps, avg loss 3.6730 (memory freed)
+  [aml] step 0/240 | loss 3.1312 (avg 3.1312) | lr 0.004996 | seq 32
+  [aml] step 10/240 | loss 4.5789 (avg 3.5352) | lr 0.004996 | seq 32
+  [aml] step 20/240 | loss 2.4082 (avg 3.5666) | lr 0.004996 | seq 32
+  [aml] step 30/240 | loss 4.3857 (avg 3.4764) | lr 0.004996 | seq 32
+  [aml] step 40/240 | loss 4.1204 (avg 3.4828) | lr 0.004996 | seq 32
+  [aml] step 50/240 | loss 1.9790 (avg 3.4116) | lr 0.004995 | seq 32
+  [aml] step 60/240 | loss 2.7057 (avg 3.3706) | lr 0.004995 | seq 32
+  [aml] step 70/240 | loss 3.9329 (avg 3.3420) | lr 0.004995 | seq 32
+  [aml] step 80/240 | loss 3.2462 (avg 3.2972) | lr 0.004995 | seq 32
+  [aml] step 90/240 | loss 3.8132 (avg 3.2959) | lr 0.004995 | seq 32
+  [aml] step 100/240 | loss 2.6145 (avg 3.2786) | lr 0.004995 | seq 32
+  [aml] step 110/240 | loss 4.4344 (avg 3.2606) | lr 0.004995 | seq 32
+  [aml] step 120/240 | loss 2.7773 (avg 3.2388) | lr 0.004995 | seq 32
+  [aml] step 130/240 | loss 2.7995 (avg 3.2427) | lr 0.004995 | seq 32
+  [aml] step 140/240 | loss 3.5095 (avg 3.2789) | lr 0.004995 | seq 32
+  [aml] step 150/240 | loss 2.2709 (avg 3.2853) | lr 0.004995 | seq 32
+  [aml] step 160/240 | loss 3.6135 (avg 3.2664) | lr 0.004994 | seq 32
+  [aml] step 170/240 | loss 3.5982 (avg 3.2378) | lr 0.004994 | seq 32
+  [aml] step 180/240 | loss 1.9844 (avg 3.2030) | lr 0.004994 | seq 32
+  [aml] step 190/240 | loss 4.1559 (avg 3.2096) | lr 0.004994 | seq 32
+  [aml] step 200/240 | loss 4.1209 (avg 3.2114) | lr 0.004994 | seq 32
+  [aml] step 210/240 | loss 2.3942 (avg 3.2180) | lr 0.004994 | seq 32
+  [aml] step 220/240 | loss 2.0723 (avg 3.2113) | lr 0.004994 | seq 32
+  [aml] step 230/240 | loss 2.3715 (avg 3.2153) | lr 0.004994 | seq 32
+[aml] training complete: 240 steps, avg loss 3.2110 (memory freed)
+
+[stage 1 — infant] What it sounds like now:
+  Q: Hello.
+  A: Both are the the concept of the the the the
+  Q: Who are you?
+  A: ...
+  Q: What do you know?
+  A: ...
+
+[growth] ONTOGENESIS: stage 1 -> 2
+  embd: 32 -> 64, layer: 1 -> 2, head: 2 -> 4
+[growth] Done. Freeze for 500 steps.
+[init] Stage 2 (child): embd=64, layer=2, head=4 — warmup 800 steps (800 backprop + 0 notorch, sqrt-scaled 2x)
+  [aml] step 0/320 | loss 1.3187 (avg 1.3187) | lr 0.000250 | seq 8
+  [aml] step 10/320 | loss 4.2119 (avg 4.5006) | lr 0.000363 | seq 8
+  [aml] step 20/320 | loss 3.2927 (avg 4.2311) | lr 0.000475 | seq 8
+  [aml] step 30/320 | loss 4.7270 (avg 4.2048) | lr 0.000588 | seq 8
+  [aml] step 40/320 | loss 5.0479 (avg 4.1847) | lr 0.000700 | seq 8
+  [aml] step 50/320 | loss 1.2875 (avg 3.9814) | lr 0.000813 | seq 8
+  [aml] step 60/320 | loss 5.3801 (avg 3.9393) | lr 0.000925 | seq 8
+  [aml] step 70/320 | loss 3.3611 (avg 3.9910) | lr 0.001038 | seq 8
+  [aml] step 80/320 | loss 4.5545 (avg 3.9834) | lr 0.001150 | seq 8
+  [aml] step 90/320 | loss 4.2380 (avg 3.9624) | lr 0.001263 | seq 8
+  [aml] step 100/320 | loss 2.7705 (avg 3.9324) | lr 0.001375 | seq 8
+  [aml] step 110/320 | loss 4.1296 (avg 3.9229) | lr 0.001488 | seq 8
+  [aml] step 120/320 | loss 4.0352 (avg 3.8389) | lr 0.001600 | seq 8
+  [aml] step 130/320 | loss 3.0308 (avg 3.8125) | lr 0.001713 | seq 8
+  [aml] step 140/320 | loss 2.0402 (avg 3.7716) | lr 0.001825 | seq 8
+  [aml] step 150/320 | loss 3.9089 (avg 3.7786) | lr 0.001938 | seq 8
+  [aml] step 160/320 | loss 3.0470 (avg 3.7613) | lr 0.002050 | seq 8
+  [aml] step 170/320 | loss 4.5371 (avg 3.7472) | lr 0.002163 | seq 8
+  [aml] step 180/320 | loss 2.2488 (avg 3.7468) | lr 0.002275 | seq 8
+  [aml] step 190/320 | loss 4.1181 (avg 3.7712) | lr 0.002387 | seq 8
+  [aml] step 200/320 | loss 3.7770 (avg 3.7470) | lr 0.002496 | seq 8
+  [aml] step 210/320 | loss 1.3217 (avg 3.7160) | lr 0.002496 | seq 8
+  [aml] step 220/320 | loss 3.1568 (avg 3.6921) | lr 0.002496 | seq 8
+  [aml] step 230/320 | loss 5.3305 (avg 3.6794) | lr 0.002495 | seq 8
+  [aml] step 240/320 | loss 5.0314 (avg 3.6887) | lr 0.002495 | seq 8
+  [aml] step 250/320 | loss 0.7399 (avg 3.6800) | lr 0.002495 | seq 8
+  [aml] step 260/320 | loss 0.9088 (avg 3.6567) | lr 0.002495 | seq 8
+  [aml] step 270/320 | loss 2.7605 (avg 3.6571) | lr 0.002495 | seq 8
+  [aml] step 280/320 | loss 3.3473 (avg 3.6502) | lr 0.002495 | seq 8
+  [aml] step 290/320 | loss 3.8920 (avg 3.6515) | lr 0.002495 | seq 8
+  [aml] step 300/320 | loss 4.2875 (avg 3.6608) | lr 0.002495 | seq 8
+  [aml] step 310/320 | loss 3.9391 (avg 3.6587) | lr 0.002495 | seq 8
+[aml] training complete: 320 steps, avg loss 3.6570 (memory freed)
+  [aml] step 0/240 | loss 2.3234 (avg 2.3234) | lr 0.002495 | seq 16
+  [aml] step 10/240 | loss 4.0463 (avg 3.4796) | lr 0.002495 | seq 16
+  [aml] step 20/240 | loss 4.2230 (avg 3.4579) | lr 0.002495 | seq 16
+  [aml] step 30/240 | loss 4.5204 (avg 3.4506) | lr 0.002495 | seq 16
+  [aml] step 40/240 | loss 3.2106 (avg 3.3986) | lr 0.002495 | seq 16
+  [aml] step 50/240 | loss 3.5219 (avg 3.3931) | lr 0.002495 | seq 16
+  [aml] step 60/240 | loss 4.2719 (avg 3.4427) | lr 0.002494 | seq 16
+  [aml] step 70/240 | loss 3.6360 (avg 3.4009) | lr 0.002494 | seq 16
+  [aml] step 80/240 | loss 3.6701 (avg 3.4131) | lr 0.002494 | seq 16
+  [aml] step 90/240 | loss 1.9795 (avg 3.4291) | lr 0.002494 | seq 16
+  [aml] step 100/240 | loss 3.3196 (avg 3.4627) | lr 0.002494 | seq 16
+  [aml] step 110/240 | loss 3.5773 (avg 3.4569) | lr 0.002494 | seq 16
+  [aml] step 120/240 | loss 3.0543 (avg 3.4622) | lr 0.002494 | seq 16
+  [aml] step 130/240 | loss 4.2364 (avg 3.4703) | lr 0.002494 | seq 16
+  [aml] step 140/240 | loss 4.2560 (avg 3.4948) | lr 0.002494 | seq 16
+  [aml] step 150/240 | loss 3.4573 (avg 3.4999) | lr 0.002494 | seq 16
+  [aml] step 160/240 | loss 4.4589 (avg 3.5006) | lr 0.002494 | seq 16
+  [aml] step 170/240 | loss 3.9249 (avg 3.5118) | lr 0.002494 | seq 16
+  [aml] step 180/240 | loss 3.3378 (avg 3.5068) | lr 0.002494 | seq 16
+  [aml] step 190/240 | loss 3.7350 (avg 3.5202) | lr 0.002494 | seq 16
+  [aml] step 200/240 | loss 2.8738 (avg 3.5129) | lr 0.002493 | seq 16
+  [aml] step 210/240 | loss 3.2782 (avg 3.4919) | lr 0.002493 | seq 16
+  [aml] step 220/240 | loss 3.1338 (avg 3.4896) | lr 0.002493 | seq 16
+  [aml] step 230/240 | loss 4.2492 (avg 3.5023) | lr 0.002493 | seq 16
+[aml] training complete: 240 steps, avg loss 3.5011 (memory freed)
+  [aml] step 0/240 | loss 2.6833 (avg 2.6833) | lr 0.002493 | seq 32
+  [aml] step 10/240 | loss 1.3288 (avg 3.2614) | lr 0.002493 | seq 32
+  [aml] step 20/240 | loss 4.0015 (avg 3.2148) | lr 0.002493 | seq 32
+  [aml] step 30/240 | loss 1.5491 (avg 2.9813) | lr 0.002493 | seq 32
+  [aml] step 40/240 | loss 3.2166 (avg 3.0179) | lr 0.002493 | seq 32
+  [aml] step 50/240 | loss 4.0596 (avg 3.0327) | lr 0.002493 | seq 32
+  [aml] step 60/240 | loss 2.1025 (avg 3.0951) | lr 0.002493 | seq 32
+  [aml] step 70/240 | loss 3.9839 (avg 3.0908) | lr 0.002493 | seq 32
+  [aml] step 80/240 | loss 4.1571 (avg 3.0613) | lr 0.002492 | seq 32
+  [aml] step 90/240 | loss 1.9601 (avg 3.0245) | lr 0.002492 | seq 32
+  [aml] step 100/240 | loss 1.3771 (avg 2.9856) | lr 0.002492 | seq 32
+  [aml] step 110/240 | loss 2.7103 (avg 2.9775) | lr 0.002492 | seq 32
+  [aml] step 120/240 | loss 3.7843 (avg 2.9872) | lr 0.002492 | seq 32
+  [aml] step 130/240 | loss 4.1451 (avg 3.0281) | lr 0.002492 | seq 32
+  [aml] step 140/240 | loss 3.5669 (avg 3.0155) | lr 0.002492 | seq 32
+  [aml] step 150/240 | loss 2.1724 (avg 2.9843) | lr 0.002492 | seq 32
+  [aml] step 160/240 | loss 3.6111 (avg 2.9872) | lr 0.002492 | seq 32
+  [aml] step 170/240 | loss 3.3249 (avg 3.0132) | lr 0.002492 | seq 32
+  [aml] step 180/240 | loss 1.3457 (avg 3.0235) | lr 0.002492 | seq 32
+  [aml] step 190/240 | loss 3.8622 (avg 3.0454) | lr 0.002492 | seq 32
+  [aml] step 200/240 | loss 3.2935 (avg 3.0353) | lr 0.002491 | seq 32
+  [aml] step 210/240 | loss 3.5474 (avg 3.0476) | lr 0.002491 | seq 32
+  [aml] step 220/240 | loss 3.2216 (avg 3.0297) | lr 0.002491 | seq 32
+  [aml] step 230/240 | loss 4.3537 (avg 3.0409) | lr 0.002491 | seq 32
+[aml] training complete: 240 steps, avg loss 3.0537 (memory freed)
+
+[stage 2 — child] What it sounds like now:
+  Q: Hello.
+  A: Both are the the the the
+  Q: Who are you?
+  A: ...
+  Q: What do you know?
+  A: ...
+
+[init] Warmup complete at stage 2. Organism ready.
+[ecology] First organism in the swarm.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] air wrote 414 bytes to ecology
+[dna] air consumed 325 bytes from 1 files: [water/gen_1778736452_1.txt]
+[dna] air wrote 20 bytes to ecology
+[dna] air consumed 282 bytes from 1 files: [earth/gen_1778736490_4.txt]
+[dna] air consumed 388 bytes from 1 files: [fire/gen_1778736504_4.txt]
+[dna] air wrote 20 bytes to ecology
+[dna] air wrote 20 bytes to ecology
+[dna] air wrote 20 bytes to ecology
+[dna] air consumed 321 bytes from 1 files: [water/gen_1778736619_10.txt]
+[trainer] micro-train burst (1316 bytes, novelty 0.05) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0000 | field_dev=-0.095 | purpose_align=0.256 | lr_mul=1.30
+[aml] burst complete: 32 steps, avg loss 2.0609 (memory freed)
+[dna] air wrote 20 bytes to ecology
+[dna] air consumed 272 bytes from 1 files: [fire/gen_1778737156_19.txt]
+[dna] air consumed 273 bytes from 1 files: [water/gen_1778737201_16.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 273 bytes from 1 files: [water/gen_1778737293_19.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 273 bytes from 1 files: [water/gen_1778737405_22.txt]
+[trainer] micro-train burst (1091 bytes, novelty 0.02) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0550 | field_dev=-0.079 | purpose_align=0.262 | lr_mul=1.30
+[aml] burst complete: 32 steps, avg loss 2.2790 (memory freed)
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 273 bytes from 1 files: [water/gen_1778738026_31.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 272 bytes from 1 files: [fire/gen_1778738081_34.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 273 bytes from 1 files: [water/gen_1778738190_37.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 272 bytes from 1 files: [fire/gen_1778738244_37.txt]
+[trainer] micro-train burst (1090 bytes, novelty 0.02) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.1666 | field_dev=-0.113 | purpose_align=0.267 | lr_mul=0.60
+[aml] burst complete: 32 steps, avg loss 1.7872 (memory freed)
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 273 bytes from 1 files: [water/gen_1778738471_43.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 273 bytes from 1 files: [water/gen_1778738539_46.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [earth/gen_1778738639_46.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 271 bytes from 1 files: [fire/gen_1778738683_49.txt]
+[trainer] micro-train burst (1086 bytes, novelty 0.02) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.2002 | field_dev=-0.104 | purpose_align=0.269 | lr_mul=0.60
+[aml] burst complete: 32 steps, avg loss 1.7236 (memory freed)
+[dna] air consumed 269 bytes from 1 files: [fire/gen_1778738784_52.txt]
+[debug-onto] tick=50 corpus=127185 stage=2 freeze=0
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 270 bytes from 1 files: [earth/gen_1778739128_55.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 273 bytes from 1 files: [water/gen_1778739167_64.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [fire/gen_1778739256_64.txt]
+[trainer] micro-train burst (1081 bytes, novelty 0.01) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0364 | field_dev=-0.100 | purpose_align=0.269 | lr_mul=0.60
+[aml] burst complete: 32 steps, avg loss 2.2632 (memory freed)
+[dna] air consumed 269 bytes from 1 files: [fire/gen_1778739434_70.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [earth/gen_1778739600_67.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 271 bytes from 1 files: [earth/gen_1778739694_70.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [fire/gen_1778739812_79.txt]
+[trainer] micro-train burst (1078 bytes, novelty 0.02) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0330 | field_dev=-0.092 | purpose_align=0.269 | lr_mul=1.30
+[aml] burst complete: 32 steps, avg loss 2.1931 (memory freed)
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [earth/gen_1778740239_79.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [fire/gen_1778740292_88.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [earth/gen_1778740358_88.txt]
+[dna] air wrote 273 bytes to ecology
+[debug-onto] tick=100 corpus=129892 stage=2 freeze=0
+[dna] air consumed 267 bytes from 1 files: [earth/gen_1778740431_91.txt]
+[trainer] micro-train burst (1074 bytes, novelty 0.01) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0696 | field_dev=-0.058 | purpose_align=0.263 | lr_mul=1.30
+[aml] burst complete: 32 steps, avg loss 2.2268 (memory freed)
+[dna] air consumed 269 bytes from 1 files: [fire/gen_1778740768_97.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [fire/gen_1778740835_100.txt]
+[dna] air wrote 273 bytes to ecology
+[dna] air wrote 273 bytes to ecology
+[dna] air consumed 269 bytes from 1 files: [earth/gen_1778740909_100.txt]
+[dna] air consumed 269 bytes from 1 files: [fire/gen_1778740972_103.txt]
+[trainer] micro-train burst (1076 bytes, novelty 0.02) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.2696 | field_dev=-0.061 | purpose_align=0.256 | lr_mul=1.30
+[aml] burst complete: 32 steps, avg loss 2.3136 (memory freed)
+
+[evolution] Organism shutting down gracefully.
