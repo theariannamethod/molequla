@@ -1170,3 +1170,38 @@ three-substrate sandwich: same code, same flags, same seeds, three
 different ecologies emerge.
 
 CUDA pull planned for after BLAS run finishes 06:55:50 UTC.
+
+---
+
+## 2026-05-14 — Honest GPU pattern: bursty, not sustained
+
+Two RunPod console screenshots minutes apart on the same run:
+- 10:25 local: GPU **util 73%, mem 95%**, CPU 1%.
+- 10:30 local: GPU **util 0%**, CPU 100%, GPU mem still 1756 MiB.
+- 10:34 local: GPU **util 100%, mem 97%**, CPU 1% again.
+
+Same binary. Same flags. Different sampling moments of a bursty
+workload. AML training bursts fire every ~10 sec, last ~1-2 sec each.
+nvidia-smi at random T sees either extreme.
+
+Reality: molequla's compute split:
+- **Forward generation (Go-side `MatrixParam.Matvec` via cgo to
+  `blasDgemv`)** = ~95% of wallclock = CPU + BLAS path.
+- **AML training bursts (`am_exec(amlModelScript())`)** = ~5% of
+  wallclock = GPU path (after gpu_init wire).
+
+The GPU is real and engaged on the burst windows. The CPU is real
+and engaged on the generation windows. The organism is a chimera
+substrate. For Body — this matches the «findings not always what
+the README predicts» framing in the Abstract: «I linked CUDA. The
+GPU is now part of the substrate. But molequla's Go-side forward
+pass kept its CPU+BLAS path. The training bursts moved to the GPU;
+the speech itself stayed on the CPU. The organism is half-GPU,
+half-CPU — a chimera substrate.»
+
+Full Go-side CUDA dispatch (so generation also uses GPU) requires
+restructuring `MatrixParam.Matvec` to route through a `goCudaSgemv`
+CGO wrapper. **Major feature, not paper-cycle scope.** Scheduled
+for future cycle. Reference in
+`~/.claude/projects/-Users-ataeff/memory/reference_cgo_cuda_wire_2026_05_14.md`
+section «What 'full GPU engagement' requires beyond the three layers».
