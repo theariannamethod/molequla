@@ -502,6 +502,16 @@ void am_init(void) {
 
   memset(&G, 0, sizeof(G));
 
+#ifdef USE_CUDA
+  // Initialise CUDA runtime + cuBLAS handle so that every USE_CUDA op call
+  // in this file has a live GPU context. Without this, ensure_gpu()'s first
+  // gpu_alloc may succeed but kernels may target an uninitialised cuBLAS
+  // handle. Idempotent — safe to call across multiple am_init() invocations.
+  if (gpu_init() != 0) {
+    fprintf(stderr, "[am_init] gpu_init() failed — GPU paths will fall through to CPU.\n");
+  }
+#endif
+
   // prophecy physics defaults
   G.prophecy = 7;
   G.destiny = 0.35f;
