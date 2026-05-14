@@ -1205,3 +1205,62 @@ CGO wrapper. **Major feature, not paper-cycle scope.** Scheduled
 for future cycle. Reference in
 `~/.claude/projects/-Users-ataeff/memory/reference_cgo_cuda_wire_2026_05_14.md`
 section «What 'full GPU engagement' requires beyond the three layers».
+
+---
+
+## 2026-05-14 — Singularity strike — DNA mirror + voice samples preserved
+
+Oleg flagged honest gap: «цитаты и логи молекулы ты сохраняешь?
+что говорят организмы?»
+
+Reality check: organism Q/A boot samples present in train.log (saved
+to git), but **actual DNA fragment content** (cross-organism
+emissions consumed by siblings) was deleted-on-consume — only
+byte counts survived. Single survivor from cell_0_baseline.
+
+### Action 1 — capture in-flight voice samples before restart
+
+From running CUDA run (before kill), pulled per-element Q/A from
+train.log into `runpod/2026-05-14/organism_voice_samples_2026_05_14/`
++ also preserved as `runpod/2026-05-14/organism_voice_samples_pre_dnamirror/`.
+
+Even at child stage with Karpathy gibberish on the surface,
+**element-corpus shaping is visible**:
+
+- **earth:** «The pieces the preciple is the slow the preciple is
+  the pieces the preciple is the slow…» (pieces / preciple
+  recurrent).
+- **air:** «Both are the the concept of the the concept of the
+  concept of…» (concept / both recurrent).
+- **water:** «The water is the a silence of the a silence is the
+  silence is the a water…» (water / silence recurrent).
+- **fire:** «The work is the most honest thing you the most honest
+  thing you the most of the most…» (work / honest recurrent).
+
+Each organism speaks in its element vocabulary even at child stage.
+Element corpora actually shape voice. Body should quote these
+verbatim — it's the «Karpathy gibberish but shaped by element»
+finding the Abstract framing predicts.
+
+### Action 2 — Singularity patch: DNA mirror to `../dna/seen/<e>/`
+
+Commit `e5c1685` patches `dnaRead` at `molequla.go:5340-5348` —
+before `os.Remove(fpath)`, copy fragment to `../dna/seen/<element>/`.
+Append-only mirror; organism consume-delete semantics preserved.
+
+Rebuild on pod, relaunch 12h ecology 07:49:17 UTC. From this point
+forward every DNA fragment that gets consumed during the 12-hour
+run is preserved. By end of run we'll have **every emission across
+12 hours × 4 organisms** for Body content-diff analysis.
+
+### Cost / total session
+
+Pod cost at 07:49 UTC ~$11. Remaining 12h × $1.49 = $17.88. Total
+session ceiling ~$29. Within budget («не считай копейки»).
+
+### Strike accounting
+
+Singularity strike count is informal now — we've blown through the
+three-strikes budget on the BLAS+canonical+CUDA stack already, but
+these are productive narrow fixes. Each generates measurable
+behavior change. Continuing.
