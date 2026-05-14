@@ -4436,7 +4436,18 @@ func GenerateResonant(model *GPT, tok *EvolvingTokenizer, field *CooccurField, p
 			for i := range topVals {
 				topVals[i] = math.Inf(-1)
 			}
-			for _, v := range overlaidLogits {
+			// EOS is excluded from top-K selection AND masked below. After a
+			// 400-step warmup the model's bigram[period][EOS] gets enough
+			// weight from overlay that EOS reliably ends up in the top-15 raw
+			// logits and is sampled → continue without append → outIDs stays
+			// empty → response is "..." (sweep cell 2 regression 2026-05-14).
+			// Generation terminates via the `. ! ?` punctuation rule below,
+			// which already exists at line ~4530 — EOS is redundant for
+			// overlay-driven generation.
+			for i, v := range overlaidLogits {
+				if i == eosID {
+					continue
+				}
 				if v > topVals[topK-1] {
 					topVals[topK-1] = v
 					for k := topK - 2; k >= 0; k-- {
@@ -4450,7 +4461,7 @@ func GenerateResonant(model *GPT, tok *EvolvingTokenizer, field *CooccurField, p
 			}
 			threshold := topVals[topK-1]
 			for i, v := range overlaidLogits {
-				if v < threshold {
+				if i == eosID || v < threshold {
 					scaled[i] = -1e10
 				} else {
 					scaled[i] = v / temp
