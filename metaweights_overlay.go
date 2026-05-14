@@ -217,16 +217,23 @@ func MetaweightsOverlay(
 	}
 
 	// 1.5. Transformer gate — silence untrained transformer logits before
-	// overlay (pitomadom.c:583-586). Untrained: mean|logit| < 0.5 → tg≈0 →
-	// transformer silent → overlay owns the signal.
-	tg := (tmag - 0.5) / 1.5
-	if tg < 0 {
-		tg = 0
-	} else if tg > 1 {
-		tg = 1
-	}
-	for i := range logits {
-		logits[i] *= tg
+	// overlay (pitomadom.c:583-586 inspiration). Only kicks in below the
+	// coefficient-switch threshold — once warmup is real (`tmag` > 1.0)
+	// the transformer leads and overlay is just a bias layer. The original
+	// formulation `tg = clamp((tmag-0.5)/1.5, 0, 1)` over-silenced warmed
+	// 16-dim embryo models (mag~1.0 → tg≈0.33) and let overlay's bigram
+	// chain dominate on the BPE subword level, producing subword salad
+	// instead of words (sweep cell 2 v2 regression, fix 2026-05-14 PM).
+	if tmag <= metaTFGateThreshold {
+		tg := tmag / metaTFGateThreshold
+		if tg < 0 {
+			tg = 0
+		} else if tg > 1 {
+			tg = 1
+		}
+		for i := range logits {
+			logits[i] *= tg
+		}
 	}
 
 	// 2. Bigram + trigram per-context — normalised probabilities written
