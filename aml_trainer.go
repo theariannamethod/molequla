@@ -232,10 +232,15 @@ func amlTrainSteps(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 		amlExec(lrScript)
 	}
 
-	// Pull trained weights back to Go model
+	if model.growthFreezeRemaining > 0 {
+		model.growthFreezeRemaining -= steps
+		if model.growthFreezeRemaining < 0 {
+			model.growthFreezeRemaining = 0
+		}
+	}
+
 	amlPullWeights(model)
 
-	// FREE AML STATE to release ~75GB of memory
 	amlClear()
 
 	if lossCount > 0 {
@@ -315,9 +320,15 @@ func amlBurstTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 		model.globalStep++
 	}
 
+	if model.growthFreezeRemaining > 0 {
+		model.growthFreezeRemaining -= steps
+		if model.growthFreezeRemaining < 0 {
+			model.growthFreezeRemaining = 0
+		}
+	}
+
 	amlPullWeights(model)
 
-	// FREE AML STATE to release memory after micro-burst
 	amlClear()
 
 	if lossCount > 0 {
