@@ -6068,9 +6068,9 @@ func backgroundTrainer(db *sql.DB, model *GPT, tok *EvolvingTokenizer, qbuf *Qua
 			earlySteps := int(float64(backpropSteps) * 0.4)
 			midSteps := int(float64(backpropSteps) * 0.3)
 			lateSteps := backpropSteps - earlySteps - midSteps
-			amlTrainSteps(model, tok, docs, earlySteps, 8)   // very short seqs, batch=1
-			amlTrainSteps(model, tok, docs, midSteps, 16)    // short seqs, batch=1
-			amlTrainSteps(model, tok, docs, lateSteps, 32)   // medium seqs, batch=1
+			ntWarmupTrain(model, tok, docs, earlySteps, 8)   // very short seqs, batch=1
+			ntWarmupTrain(model, tok, docs, midSteps, 16)    // short seqs, batch=1
+			ntWarmupTrain(model, tok, docs, lateSteps, 32)   // medium seqs, batch=1
 			// Phase B: notorch for delta adapters (40%, no autograd = much faster)
 			// notorchTrainSteps DISABLED in warmup — diverges at stage 5 (loss 3.5→116)
 			// notorchTrainSteps(model, tok, docs, notorchDeltaSteps, CFG.NotorchLR)
@@ -6125,7 +6125,7 @@ func backgroundTrainer(db *sql.DB, model *GPT, tok *EvolvingTokenizer, qbuf *Qua
 			burstLR := CFG.NotorchLR * lrMul
 
 			// notorch: gradient-free delta training (no backward pass, no compute graph)
-			amlBurstTrain(model, tok, docs, CFG.MicroSteps, burstLR)
+			ntBurstTrain(model, tok, docs, CFG.MicroSteps, burstLR)
 
 			model.mu.Lock()
 			// Measure loss after burst
@@ -6222,6 +6222,7 @@ func backgroundTrainer(db *sql.DB, model *GPT, tok *EvolvingTokenizer, qbuf *Qua
 			model.mu.Lock()
 			fmt.Printf("[debug-onto] tick=%d corpus=%d ingested=%d stage=%d freeze=%d\n", tickCount, corpusChars, model.corpusIngestedTotal, model.CurrentGrowthStage(), model.growthFreezeRemaining)
 			if model.MaybeGrowArchitecture() {
+				ntOnGrowth() // reset the notorch tape — Net2Net changed dims (06_PLAN S1)
 				SaveCheckpoint(model, tok, "")
 				nP := 0
 				for _, m := range model.Base {
@@ -6472,9 +6473,9 @@ func main() {
 				earlySteps := int(float64(backpropSteps) * 0.4)
 				midSteps := int(float64(backpropSteps) * 0.3)
 				lateSteps := backpropSteps - earlySteps - midSteps
-				amlTrainSteps(model, tok, docs, earlySteps, 8)   // very short seqs, batch=1
-				amlTrainSteps(model, tok, docs, midSteps, 16)    // short seqs, batch=1
-				amlTrainSteps(model, tok, docs, lateSteps, 32)   // medium seqs, batch=1
+				ntWarmupTrain(model, tok, docs, earlySteps, 8)   // very short seqs, batch=1
+				ntWarmupTrain(model, tok, docs, midSteps, 16)    // short seqs, batch=1
+				ntWarmupTrain(model, tok, docs, lateSteps, 32)   // medium seqs, batch=1
 				model.lastWarmupStage = stage
 				SaveCheckpoint(model, tok, "")
 			} else {
@@ -6507,6 +6508,7 @@ func main() {
 			if !model.MaybeGrowArchitecture() {
 				break // corpus too small for next stage, or already at max
 			}
+			ntOnGrowth() // reset the notorch tape — Net2Net changed dims (06_PLAN S1)
 			model.growthFreezeRemaining = 0 // skip freeze during init — we're about to warmup anyway
 
 			// Rebuild corpus field after growth (vocab may have expanded)
