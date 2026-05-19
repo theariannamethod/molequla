@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"time"
 )
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -123,9 +124,12 @@ func ntBuildForward(model *GPT, pIdx []int, tokIdx, tgtIdx, T, vocab int) int {
 // ntTrainCore runs `steps` training steps of molequla's content model on
 // notorch. lrFor(step) supplies the per-step learning rate. Caller holds
 // model.mu. Returns (avg loss, counted steps).
-func ntTrainCore(model *GPT, tok *EvolvingTokenizer, docs []string, steps, seqLen int, lrFor func(int) float64) (float64, int) {
+// Returns (avg loss, counted steps, step-loop wall ms) — the wall time is the
+// pure training cost, criterion-2 metric (06_PLAN §11.2), measured over the
+// step loop only, excluding the per-burst weight mirror in/out.
+func ntTrainCore(model *GPT, tok *EvolvingTokenizer, docs []string, steps, seqLen int, lrFor func(int) float64) (float64, int, float64) {
 	if len(docs) == 0 || steps <= 0 {
-		return 0, 0
+		return 0, 0, 0
 	}
 	vocab := tok.VocabSize
 	params := ntContentParams(model)
@@ -155,6 +159,7 @@ func ntTrainCore(model *GPT, tok *EvolvingTokenizer, docs []string, steps, seqLe
 	var lossSum float64
 	var lossN int
 
+	t0 := time.Now()
 	for step := 0; step < steps; step++ {
 		ids := tok.Encode(docs[rand.Intn(len(docs))])
 		if len(ids) < 2 {
@@ -210,20 +215,25 @@ func ntTrainCore(model *GPT, tok *EvolvingTokenizer, docs []string, steps, seqLe
 		}
 		model.globalStep++
 	}
+	elapsedMs := float64(time.Since(t0).Microseconds()) / 1000.0
 
 	// Mirror trained weights back into the canonical model.Base store.
 	for i, p := range params {
 		ntUnflattenMatrix(p.mp, ntTensorGet(tensors[i], p.mp.Nout*p.mp.Nin))
 	}
 	if lossN > 0 {
-		return lossSum / float64(lossN), lossN
+		return lossSum / float64(lossN), lossN, elapsedMs
 	}
-	return 0, 0
+	return 0, 0, elapsedMs
 }
 
 // ntBurstTrain — ecology micro-burst on the notorch path. Mirrors amlBurstTrain
 // (aml_trainer.go:252): fixed burst LR scaled by embryo/current embd.
 func ntBurstTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int, burstLR float64) {
+	if CFG.Trainer == "aml" {
+		amlBurstTrain(model, tok, docs, steps, burstLR)
+		return
+	}
 	if len(docs) == 0 || steps <= 0 {
 		return
 	}
@@ -231,7 +241,7 @@ func ntBurstTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int, 
 	defer model.mu.Unlock()
 	embryoEmbd := CFG.GrowthStages[0][1]
 	lr := burstLR * float64(embryoEmbd) / float64(model.NEmbd)
-	avg, n := ntTrainCore(model, tok, docs, steps, model.BlockSize, func(int) float64 { return lr })
+	avg, n, ms := ntTrainCore(model, tok, docs, steps, model.BlockSize, func(int) float64 { return lr })
 	if model.growthFreezeRemaining > 0 {
 		model.growthFreezeRemaining -= steps
 		if model.growthFreezeRemaining < 0 {
@@ -239,8 +249,17 @@ func ntBurstTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int, 
 		}
 	}
 	if n > 0 {
-		fmt.Printf("[notorch] burst complete: %d steps, avg loss %.4f\n", steps, avg)
+		fmt.Printf("[notorch] burst complete: %d steps, avg loss %.4f | %.0fms %.1f steps/s\n",
+			steps, avg, ms, ntStepsPerSec(n, ms))
 	}
+}
+
+// ntStepsPerSec — steps/sec from a counted-step total and wall ms (criterion 2).
+func ntStepsPerSec(n int, ms float64) float64 {
+	if ms <= 0 {
+		return 0
+	}
+	return float64(n) / (ms / 1000.0)
 }
 
 // ntWarmupTrain — per-stage warmup on the notorch path. Mirrors amlTrainSteps
@@ -248,6 +267,10 @@ func ntBurstTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int, 
 // post-growth Chuck-state reset, S1, costs no LR-schedule continuity — the
 // schedule lives in cosineLR, not in Chuck's internal macro counter).
 func ntWarmupTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int, overrides ...int) {
+	if CFG.Trainer == "aml" {
+		amlTrainSteps(model, tok, docs, steps, overrides...)
+		return
+	}
 	if len(docs) == 0 || steps <= 0 {
 		return
 	}
@@ -268,7 +291,7 @@ func ntWarmupTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 		}
 		return lr
 	}
-	avg, n := ntTrainCore(model, tok, docs, steps, seqLen, lrFor)
+	avg, n, ms := ntTrainCore(model, tok, docs, steps, seqLen, lrFor)
 	if model.growthFreezeRemaining > 0 {
 		model.growthFreezeRemaining -= steps
 		if model.growthFreezeRemaining < 0 {
@@ -276,6 +299,7 @@ func ntWarmupTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 		}
 	}
 	if n > 0 {
-		fmt.Printf("[notorch] warmup complete: %d steps, avg loss %.4f\n", steps, avg)
+		fmt.Printf("[notorch] warmup complete: %d steps, avg loss %.4f | %.0fms %.1f steps/s\n",
+			steps, avg, ms, ntStepsPerSec(n, ms))
 	}
 }

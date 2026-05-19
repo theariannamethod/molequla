@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/rand"
 	"strings"
+	"time"
 )
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -175,6 +176,7 @@ func amlTrainSteps(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 	var lossSum float64
 	var lossCount int
 
+	t0 := time.Now() // criterion-2 timing: step loop only (06_PLAN §11.2)
 	for step := 0; step < steps; step++ {
 		doc := docs[rand.Intn(len(docs))]
 		ids := tok.Encode(doc)
@@ -232,6 +234,7 @@ func amlTrainSteps(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 		amlExec(lrScript)
 	}
 
+	elapsedMs := float64(time.Since(t0).Microseconds()) / 1000.0
 	if model.growthFreezeRemaining > 0 {
 		model.growthFreezeRemaining -= steps
 		if model.growthFreezeRemaining < 0 {
@@ -244,7 +247,12 @@ func amlTrainSteps(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 	amlClear()
 
 	if lossCount > 0 {
-		fmt.Printf("[aml] training complete: %d steps, avg loss %.4f (memory freed)\n", steps, lossSum/float64(lossCount))
+		sps := 0.0
+		if elapsedMs > 0 {
+			sps = float64(lossCount) / (elapsedMs / 1000.0)
+		}
+		fmt.Printf("[aml] training complete: %d steps, avg loss %.4f | %.0fms %.1f steps/s (memory freed)\n",
+			steps, lossSum/float64(lossCount), elapsedMs, sps)
 	}
 }
 
@@ -279,6 +287,7 @@ func amlBurstTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 	var lossSum float64
 	var lossCount int
 
+	t0 := time.Now() // criterion-2 timing: step loop only (06_PLAN §11.2)
 	for step := 0; step < steps; step++ {
 		doc := docs[rand.Intn(len(docs))]
 		ids := tok.Encode(doc)
@@ -320,6 +329,7 @@ func amlBurstTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 		model.globalStep++
 	}
 
+	elapsedMs := float64(time.Since(t0).Microseconds()) / 1000.0
 	if model.growthFreezeRemaining > 0 {
 		model.growthFreezeRemaining -= steps
 		if model.growthFreezeRemaining < 0 {
@@ -332,6 +342,11 @@ func amlBurstTrain(model *GPT, tok *EvolvingTokenizer, docs []string, steps int,
 	amlClear()
 
 	if lossCount > 0 {
-		fmt.Printf("[aml] burst complete: %d steps, avg loss %.4f (memory freed)\n", steps, lossSum/float64(lossCount))
+		sps := 0.0
+		if elapsedMs > 0 {
+			sps = float64(lossCount) / (elapsedMs / 1000.0)
+		}
+		fmt.Printf("[aml] burst complete: %d steps, avg loss %.4f | %.0fms %.1f steps/s (memory freed)\n",
+			steps, lossSum/float64(lossCount), elapsedMs, sps)
 	}
 }

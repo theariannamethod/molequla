@@ -106,6 +106,12 @@ type Config struct {
 	// prevents -inf bias from masking valid model preferences.
 	CorpusLogitOverlay     bool    `json:"corpus_logit_overlay"`
 
+	// Trainer selects the training backend: "notorch" (compiled C tape,
+	// BLAS, automatic GPU — the default) or "aml" (the legacy AML-interpreter
+	// path, kept for the criterion-2 A/B speed comparison). See
+	// 06_PLAN_gpu_training.md §11.2.
+	Trainer string `json:"trainer"`
+
 	// UseGPU routes per-matrix Matvec calls through cuBLAS sgemm on Linux
 	// builds (see gpu_bindings_linux.go + gpu_forward.go). Inference-only:
 	// gradEnabled gates training back to the CPU/BLAS path. Default off — same
@@ -270,6 +276,7 @@ var CFG = Config{
 	SPACoherenceGate:     false,
 	SPAEmbedAlpha:        0.85, // Q's default (q/README.md:179)
 	CorpusLogitOverlay:   false,
+	Trainer:              "notorch",
 	MetaCBigram:          15.0, // Q's weightless default (q/README.md:53)
 	MetaCTrigram:         10.0, // Q's weightless default (q/README.md:53)
 	MetaCHebbian:         1.0,  // Q's weightless default (q/README.md:53, c_heb)
@@ -5867,6 +5874,10 @@ func parseCLIArgs() (organismID string, configPath string, element string, evolu
 			CFG.SPACoherenceGate = true
 		} else if os.Args[i] == "--corpus-overlay" {
 			CFG.CorpusLogitOverlay = true
+		} else if os.Args[i] == "--trainer" && i+1 < len(os.Args) {
+			// "notorch" (default) or "aml" — selects the training backend.
+			CFG.Trainer = os.Args[i+1]
+			i++
 		} else if os.Args[i] == "--zero-warmup" {
 			// Skip all per-stage warmup training. Used to test pure
 			// Q-style zero-training coherence: embryo organism receives only
