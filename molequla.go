@@ -53,6 +53,11 @@ type Config struct {
 	MaxCorpusLines int     `json:"max_corpus_lines"`
 	MaxLineChars   int     `json:"max_line_chars"`
 	MinNewChars    int     `json:"min_new_chars_to_train"`
+	// DNAMinFragmentBytes — minimum DNA fragment size in bytes. A unified
+	// emit/consume gate: dnaWrite skips below this, dnaRead deletes below
+	// this. Replaces a desynced literal pair (write 5 / read 10) that
+	// destroyed every sub-10-byte emission unconsumed.
+	DNAMinFragmentBytes int `json:"dna_min_fragment_bytes"`
 
 	// model
 	TieEmbeddings bool `json:"tie_embeddings"`
@@ -229,6 +234,7 @@ var CFG = Config{
 	MaxCorpusLines:       8000,
 	MaxLineChars:         240,
 	MinNewChars:          480,
+	DNAMinFragmentBytes:  5, // unified DNA emit+consume gate (Fix A)
 	TieEmbeddings:        true,
 	NLayer:               1,
 	NEmbd:                16,
@@ -5421,7 +5427,7 @@ func dnaWrite(element string, model *GPT, tok *EvolvingTokenizer, field *Cooccur
 	// GenerateResonant takes model.mu.Lock internally — do NOT double-lock
 	answer := GenerateResonant(model, tok, field, probe, docs, true)
 
-	if answer == "" || len(answer) < 5 {
+	if answer == "" || len(answer) < CFG.DNAMinFragmentBytes {
 		return
 	}
 
@@ -5459,7 +5465,7 @@ func dnaRead(element string, corpusPath string, qbuf *QuantumBuffer, tok *Evolvi
 				continue
 			}
 			text := strings.TrimSpace(string(data))
-			if len(text) < 10 {
+			if len(text) < CFG.DNAMinFragmentBytes {
 				os.Remove(fpath)
 				continue
 			}
