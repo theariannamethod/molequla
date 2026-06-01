@@ -2375,6 +2375,7 @@ func (gpt *GPT) MaybeGrowArchitecture() bool {
 		lk := layerKeySet{
 			wq: pfx + "wq", wk: pfx + "wk", wv: pfx + "wv", wo: pfx + "wo",
 			fcG: pfx + "fc_g", fcV: pfx + "fc_v", fc2: pfx + "fc2",
+			wrA: pfx + "wr_a", wrB: pfx + "wr_b",
 		}
 		nHeads := len(CFG.HeadTypes)
 		if nHeads > 0 {
@@ -2386,6 +2387,19 @@ func (gpt *GPT) MaybeGrowArchitecture() bool {
 			}
 		}
 		gpt.layerKeys[li] = lk
+	}
+
+	// 7c. Inc2: rebuild low-rank RRPRAM factors fresh for the new architecture.
+	// Net2Net preserves the content path, but the factors are re-initialized:
+	// head count and head types are reassigned on growth (head identity does not
+	// survive) and HeadDim can shrink (adolescent→teen 32→28), which GrowDims
+	// no-ops. The post-growth freeze + warmup re-train them while the gate keeps
+	// content dominant. ensureRRPRAMFactors allocates [NHead·NEmbd × R] /
+	// [NHead·R × BlockSize] when the new topology has hybrid heads.
+	for li := 0; li < newLayer; li++ {
+		delete(gpt.Base, fmt.Sprintf("l%d.wr_a", li))
+		delete(gpt.Base, fmt.Sprintf("l%d.wr_b", li))
+		gpt.ensureRRPRAMFactors(li)
 	}
 
 	// 8. Extend gamma snapshot for new embedding dimensions

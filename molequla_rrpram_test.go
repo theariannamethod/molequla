@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"testing"
 )
@@ -228,4 +229,78 @@ func TestRRPRAMOp33Parity(t *testing.T) {
 		t.Fatalf("op-33 parity FAILED: max |C-Go| = %.3e\n C=%v\nGo=%v", maxDiff, cOut, goOut)
 	}
 	t.Logf("op-33 parity OK: max |C-Go| = %.3e — Go inference == notorch trainer", maxDiff)
+}
+
+// TestRRPRAMGrowth drives an organism embryo→teen and checks the low-rank
+// factors are rebuilt with correct dims at every stage — including the
+// adolescent→teen HeadDim shrink (32→28) — and that the grown model still
+// trains on the notorch path.
+func TestRRPRAMGrowth(t *testing.T) {
+	saved := CFG
+	defer func() { CFG = saved }()
+
+	CFG.GrowthStages = [][4]int{
+		{0, 16, 1, 1},       // embryo: content-only
+		{20000, 32, 1, 2},   // infant: hybrid appears
+		{50000, 64, 2, 4},   // child
+		{200000, 128, 4, 4}, // adolescent: HeadDim 32
+		{350000, 224, 5, 8}, // teen: HeadDim 28 (shrink from 32)
+	}
+	CFG.NEmbd = 16
+	CFG.NLayer = 1
+	CFG.NHead = 1
+	CFG.BlockSize = 96
+	CFG.HeadTypes = []string{"content"}
+	CFG.HybridAlphaInit = 0.5
+	CFG.RRPRAMRank = 8
+	CFG.DeltaRank = 4
+	CFG.FreezeAfterGrowthSteps = 0
+	CFG.TieEmbeddings = true
+	CFG.Trainer = "notorch"
+
+	tok := NewEvolvingTokenizer([]string{"test growth of the low rank rrpram factors"})
+	model := NewGPT(tok)
+	if _, ok := model.Base["l0.wr_a"]; ok {
+		t.Fatal("embryo (content-only) must not allocate RRPRAM factors")
+	}
+
+	R := CFG.RRPRAMRank
+	checkFactors := func(stage string) {
+		for li := 0; li < model.NLayer; li++ {
+			a := model.Base[fmt.Sprintf("l%d.wr_a", li)]
+			b := model.Base[fmt.Sprintf("l%d.wr_b", li)]
+			if a == nil || b == nil {
+				t.Fatalf("%s: layer %d missing factors", stage, li)
+			}
+			if a.Nout != model.NHead*model.NEmbd || a.Nin != R {
+				t.Fatalf("%s L%d wr_a %dx%d, want %dx%d", stage, li, a.Nout, a.Nin, model.NHead*model.NEmbd, R)
+			}
+			if b.Nout != model.NHead*R || b.Nin != model.BlockSize {
+				t.Fatalf("%s L%d wr_b %dx%d, want %dx%d", stage, li, b.Nout, b.Nin, model.NHead*R, model.BlockSize)
+			}
+		}
+	}
+
+	for _, want := range []struct {
+		stage       string
+		embd, nhead int
+	}{
+		{"infant", 32, 2}, {"child", 64, 4}, {"adolescent", 128, 4}, {"teen", 224, 8},
+	} {
+		model.corpusIngestedTotal = 10000000
+		if !model.MaybeGrowArchitecture() {
+			t.Fatalf("expected growth to %s", want.stage)
+		}
+		if model.NEmbd != want.embd || model.NHead != want.nhead {
+			t.Fatalf("%s: got embd=%d head=%d", want.stage, model.NEmbd, model.NHead)
+		}
+		checkFactors(want.stage)
+	}
+
+	docs := []string{"a longer document to train the teen stage organism on its low rank rrpram factors and content heads across positions"}
+	avg, n, _ := ntTrainCore(model, tok, docs, 10, model.BlockSize, func(int) float64 { return 1e-3 })
+	if n == 0 || math.IsNaN(avg) || math.IsInf(avg, 0) || avg <= 0 {
+		t.Fatalf("teen-stage trainer failed: avg=%v n=%d", avg, n)
+	}
+	t.Logf("RRPRAM growth OK through teen (HeadDim 32→28 shrink handled); teen loss %.3f over %d steps", avg, n)
 }
