@@ -2041,3 +2041,60 @@ symptom-only.
 
 — polygon Claude (Arianna Method)
 
+---
+
+## Increment 2 — low-rank RRPRAM (GPU-training rework, part 2) — 2026-06-01/02 (polygon)
+
+Increment 1 made molequla train its **content** transformer on the notorch
+tape. Increment 2 closes the architectural half left open: molequla's RRPRAM was
+a per-head position-indexed bias `w_pattern` that the trainer never touched, so
+from the infant stage ~half the attention heads inferred on random noise
+(audit S2 / `_notes/molequla_deepfix/07_AUDIT.md` B1).
+
+A 3-lens Opus check-pass on the first plan caught that the drafted premise was
+false: notorch op-33 `nt_rrpram_lowrank_attention` is a **true causal low-rank
+attention**, not a factorization of the position-bias — different functions.
+Reframed (with Oleg): **replace** the never-trained stub with the proven
+**Resonance low-rank attention** (op 33 — the form Resonance 200M was trained on,
+`~/arianna/resonance.aml`, `notorch/examples/train_resonance_lora.c`). Janus is
+the cautionary history (naive full `Wr` banned, gate-collapse); Resonance is the
+positive template.
+
+Design (`_notes/molequla_deepfix/08_DESIGN.md`): per layer, one packed op-33 call
+(full-NEmbd input, all heads, same V as content) → `rrpram_out`; per-head
+**frozen** sigmoid gate blends at the **output** level
+`out = (1-a)·content_out + a·rrpram_out` via `nt_mul`/`nt_add` (content heads →
+gate 0). Frozen gate keeps `sigmoid`/`scale_by_t` off the tape, sidestepping the
+notorch GPU-sync bug class. Store: Base `wr_a [NHead·NEmbd × R]` /
+`wr_b [NHead·R × BlockSize]`, packed/split each burst, registered after the
+content params so content Chuck slots are untouched (B1). `CFG.RRPRAMRank=32`;
+`seqLen` pinned to `BlockSize=96` when RRPRAM is active (op-33 `T_r==T`).
+
+Branch `molequla-rrpram-inc2` off `7cb48db`:
+- `83bd0f7` cgo bindings (op-33 + `nt_tape_param_frozen`)
+- `12fdbec` factor store `wr_a`/`wr_b`
+- `e3656a3` test-suite migration — the suite was **red on main** since the
+  growth-fix (`MaybeGrowArchitecture` signature, DNA threshold); now green
+- `1bf333c` trainer: op-33 forward + frozen-gate output-level blend
+- `821737c` inference rewrite → output-level blend, **S2 closed**
+- `24e9c76` growth: rebuild factors fresh per stage (Net2Net)
+
+Verification (CPU, polygon, all green):
+- **train ≡ infer** proven — `TestRRPRAMOp33Parity`: notorch op-33 vs the Go
+  `rrpramScores()` pipeline (shared verbatim with the trainer) on identical
+  weights, **max |C−Go| = 1.49e-8** (float32 epsilon).
+- `TestRRPRAMForward`: hybrid `wr_a` trains (Δ≈1.5e-2), content head gate-masked
+  (Δ≈1.8e-9). `TestRRPRAMGrowth`: factor dims correct embryo→teen incl. the
+  HeadDim 32→28 shrink. Full `go test` suite green.
+- **Live ecology smoke (150s):** organism grew embryo→infant (RRPRAM active),
+  warmup+ecology losses finite and descending (embryo 5.13→3.11, infant
+  1.19→1.11, ecology burst 0.798), **0 NaN/panic**, coherent generation
+  (Q-coherence overlay intact, criterion 8).
+
+Acceptance: criteria 5 (growth) / 7 (S2, train≡infer, gate frozen→no collapse) /
+8 (Q-coherence) ✅. Criterion 9 (embryo→adult+mitosis on GPU, paper Section 9) —
+RunPod, pending. notorch `nt_sigmoid`/`nt_scale_by_t` GPU-sync fix landed
+alongside (standalone, unblocks a future trainable gate).
+
+— polygon Claude (Arianna Method)
+
