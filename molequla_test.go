@@ -382,7 +382,8 @@ func TestMaybeGrowArchitectureOneStageAtATime(t *testing.T) {
 	model.AddDeltaModule(1.0)
 
 	// Even with corpus=999999 (enough for adolescent), should grow only to infant (stage 0→1)
-	grew := model.MaybeGrowArchitecture(999999)
+	model.corpusIngestedTotal = 999999
+	grew := model.MaybeGrowArchitecture()
 	if !grew {
 		t.Fatal("MaybeGrowArchitecture should have grown")
 	}
@@ -429,7 +430,8 @@ func TestMaybeGrowArchitectureFreezeBlocks(t *testing.T) {
 	model.AddDeltaModule(1.0)
 
 	// First growth
-	grew := model.MaybeGrowArchitecture(30000)
+	model.corpusIngestedTotal = 30000
+	grew := model.MaybeGrowArchitecture()
 	if !grew {
 		t.Fatal("first growth should succeed")
 	}
@@ -438,7 +440,8 @@ func TestMaybeGrowArchitectureFreezeBlocks(t *testing.T) {
 	}
 
 	// Second growth should be blocked by freeze
-	grew = model.MaybeGrowArchitecture(999999)
+	model.corpusIngestedTotal = 999999
+	grew = model.MaybeGrowArchitecture()
 	if grew {
 		t.Fatal("growth during freeze should be blocked")
 	}
@@ -463,7 +466,8 @@ func TestMaybeGrowArchitectureLegacySkips(t *testing.T) {
 	tok := NewEvolvingTokenizer([]string{"test"})
 	model := NewGPT(tok)
 
-	grew := model.MaybeGrowArchitecture(999999)
+	model.corpusIngestedTotal = 999999
+	grew := model.MaybeGrowArchitecture()
 	if grew {
 		t.Fatal("legacy checkpoint (no matching stage) should not grow")
 	}
@@ -497,7 +501,8 @@ func TestMaybeGrowArchitectureMatrixDimensions(t *testing.T) {
 	}
 	model.AddDeltaModule(1.0)
 
-	model.MaybeGrowArchitecture(30000)
+	model.corpusIngestedTotal = 30000
+	model.MaybeGrowArchitecture()
 
 	// After growth to stage 1 (32 embd), check matrix dims
 	wte := model.Base["wte"]
@@ -566,7 +571,8 @@ func TestTieEmbeddingsOntogenesisThenSaveLoad(t *testing.T) {
 	model.AddDeltaModule(1.0)
 
 	// Grow: embryo → infant
-	model.MaybeGrowArchitecture(30000)
+	model.corpusIngestedTotal = 30000
+	model.MaybeGrowArchitecture()
 
 	// Save
 	tmpFile := filepath.Join(t.TempDir(), "ckpt_after_growth.json")
@@ -693,7 +699,7 @@ func TestDnaReadSkipsShortFiles(t *testing.T) {
 
 	airDir := filepath.Join(tmpDir, "dna", "output", "air")
 	os.MkdirAll(airDir, 0755)
-	os.WriteFile(filepath.Join(airDir, "gen_1_0.txt"), []byte("short"), 0644) // < 10 chars
+	os.WriteFile(filepath.Join(airDir, "gen_1_0.txt"), []byte("ab"), 0644) // < DNAMinFragmentBytes (5, Fix A)
 
 	corpusPath := filepath.Join(tmpDir, "corpus.txt")
 	os.WriteFile(corpusPath, []byte("initial\n"), 0644)
@@ -708,7 +714,7 @@ func TestDnaReadSkipsShortFiles(t *testing.T) {
 	qb := NewQuantumBuffer()
 	added := dnaRead("earth", corpusPath, qb, tok)
 	if added != 0 {
-		t.Errorf("short files (<10 chars) should be skipped, got added=%d", added)
+		t.Errorf("files shorter than DNAMinFragmentBytes should be skipped, got added=%d", added)
 	}
 
 	// Short file should be deleted (cleaned up)
