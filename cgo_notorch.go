@@ -132,3 +132,24 @@ func ntTrainMode(on bool) {
 }
 
 func ntSeed(s uint64) { C.nt_seed(C.uint64_t(s)) }
+
+// ── Increment 2: low-rank RRPRAM (Resonance form, op 33) ──
+// molequla's never-trained position-bias w_pattern is replaced by notorch's
+// proven low-rank attention. Reference: notorch examples/train_resonance_lora.c.
+
+// ntRrpramLowrankAttention — op 33, packed low-rank RRPRAM attention.
+// wrCombined packs Wr_a[H,E,R] then Wr_b[H,R,T_r] in one tensor (T_r == T);
+// rank is derived as len/(H·(E+T_r)). xIdx is the post-RMSNorm hidden (full E),
+// vIdx the same value tensor the content head uses. Returns the post-softmax
+// attention-weighted V, shape [T × (nrHeads·headDim)] — same layout as content.
+func ntRrpramLowrankAttention(wrCombinedIdx, xIdx, vIdx, T, nEmbd, nrHeads, headDim int) int {
+	return int(C.nt_rrpram_lowrank_attention(C.int(wrCombinedIdx), C.int(xIdx), C.int(vIdx),
+		C.int(T), C.int(nEmbd), C.int(nrHeads), C.int(headDim)))
+}
+
+// ntTapeParamFrozen registers a tensor as a FROZEN tape param: it takes part in
+// the forward and gradient flows through it, but the optimizer step skips it.
+// Used for the precomputed per-head gate vectors (g_sig / g_one) — the gate is
+// frozen this increment, which keeps sigmoid/scale_by_t off the tape and so
+// sidesteps the notorch GPU-sync bug class on those ops.
+func ntTapeParamFrozen(t ntTensor) int { return int(C.nt_tape_param_frozen(t)) }
