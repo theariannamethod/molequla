@@ -6151,6 +6151,12 @@ func backgroundTrainer(db *sql.DB, model *GPT, tok *EvolvingTokenizer, qbuf *Qua
 	syntracker := NewSyntropyTracker()
 	field := NewCooccurField()
 	tickCount := 0
+	var docs []string     // persists across ticks; reloaded throttled (see loop)
+	lastFieldRebuild := -1 // tick of last corpus reload + field rebuild
+	// Stage-gated GPU: tiny stages run faster on CPU (kernel-launch overhead
+	// dwarfs the small matmuls — measured 8 steps/s on GPU at child vs ~90 on
+	// CPU); GPU pays off only at teen/adult. Match the current (seed) stage.
+	ntSetGPUForStage(model.CurrentGrowthStage())
 
 	// Inherit burst_history from parent (mitosis lineage)
 	if len(model.inheritedBurstHistory) > 0 {
@@ -6169,15 +6175,22 @@ func backgroundTrainer(db *sql.DB, model *GPT, tok *EvolvingTokenizer, qbuf *Qua
 
 		tickCount++
 
-		updateReservoirCorpus(db, CFG.CorpusPath, CFG.MaxCorpusLines)
-		docs := loadCorpusLines(CFG.CorpusPath)
-
-		// Rebuild field from current corpus (the organism re-reads its own physics)
-		if len(docs) > 0 {
-			field.BuildFromCorpus(tok, docs)
-			model.mu.Lock()
-			model.corpusField = field // share with GenerateSentence for adaptive blend
-			model.mu.Unlock()
+		// Reload corpus + rebuild the cooccur field only PERIODICALLY. Rebuilding
+		// it every tick is O(corpus) and, as DNA grows the corpus, collapses tick
+		// throughput until the ontogenesis check never fires and the colony stalls
+		// at child (observed 2026-06-03 GPU run: debug-onto count 0 in 24 min).
+		// The monotonic growth clock (corpusIngestedTotal) still advances every
+		// tick on consume; a field a few ticks stale is fine for generation.
+		if docs == nil || tickCount-lastFieldRebuild >= 30 {
+			updateReservoirCorpus(db, CFG.CorpusPath, CFG.MaxCorpusLines)
+			docs = loadCorpusLines(CFG.CorpusPath)
+			if len(docs) > 0 {
+				field.BuildFromCorpus(tok, docs)
+				model.mu.Lock()
+				model.corpusField = field // share with GenerateSentence for adaptive blend
+				model.mu.Unlock()
+			}
+			lastFieldRebuild = tickCount
 		}
 
 		// Tokenizer evolution
@@ -6355,19 +6368,14 @@ func backgroundTrainer(db *sql.DB, model *GPT, tok *EvolvingTokenizer, qbuf *Qua
 				model.mu.Lock()
 				model.corpusIngestedTotal += consumed
 				model.mu.Unlock()
-				// Reload corpus with new food
-				docs = loadCorpusLines(CFG.CorpusPath)
-				if len(docs) > 0 {
-					field.BuildFromCorpus(tok, docs)
-					model.mu.Lock()
-					model.corpusField = field
-					model.mu.Unlock()
-				}
+				// Corpus reload + field rebuild are throttled at the loop top
+				// (every 30 ticks) so consume stays O(1) and ticks stay fast —
+				// this is what lets the ontogenesis clock actually advance.
 			}
 		}
 
-		// Ontogenesis: check if architecture should grow (every 50 ticks — corpus grows via DNA)
-		if tickCount%50 == 0 {
+		// Ontogenesis: check if architecture should grow (every 10 ticks — corpus grows via DNA)
+		if tickCount%10 == 0 {
 			// corpus = bounded reservoir file size (saturates); ingested =
 			// the monotonic clock MaybeGrowArchitecture actually gates on.
 			corpusChars := 0
@@ -6377,7 +6385,8 @@ func backgroundTrainer(db *sql.DB, model *GPT, tok *EvolvingTokenizer, qbuf *Qua
 			model.mu.Lock()
 			fmt.Printf("[debug-onto] tick=%d corpus=%d ingested=%d stage=%d freeze=%d\n", tickCount, corpusChars, model.corpusIngestedTotal, model.CurrentGrowthStage(), model.growthFreezeRemaining)
 			if model.MaybeGrowArchitecture() {
-				ntOnGrowth() // reset the notorch tape — Net2Net changed dims (06_PLAN S1)
+				ntOnGrowth()                                    // reset the notorch tape — Net2Net changed dims (06_PLAN S1)
+				ntSetGPUForStage(model.CurrentGrowthStage())    // flip CPU→GPU at teen/adult
 				SaveCheckpoint(model, tok, "")
 				nP := 0
 				for _, m := range model.Base {

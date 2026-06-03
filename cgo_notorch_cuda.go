@@ -30,9 +30,22 @@ func ntGPUEnable() (bool, string) {
 	if C.gpu_init() != 0 {
 		return false, "gpu_init() failed — notorch trainer on CPU/BLAS"
 	}
-	C.nt_set_gpu_mode(1)
+	C.nt_set_gpu_mode(0) // device inited; start on CPU — ntSetGPUForStage gates by stage
 	C.nt_gpu_dispatch_reset()
-	return true, "notorch trainer on GPU — tape dispatching to cuBLAS"
+	return true, "notorch GPU device initialized — stage-gated (CPU until teen, cuBLAS at teen/adult)"
+}
+
+// ntSetGPUForStage routes the notorch training tape to GPU only when the model
+// is big enough to amortize cuBLAS kernel-launch overhead (teen+, NEmbd>=224).
+// Below that, the tiny matmuls run faster on CPU/BLAS (measured 8 steps/s on
+// GPU at child vs ~90 on CPU). Called at startup and after each ontogenesis
+// growth. (2026-06-03 GPU mechanism rework.)
+func ntSetGPUForStage(stage int) {
+	if stage >= 4 { // GrowthStages index: 4=teen (224d), 5=adult (320d)
+		C.nt_set_gpu_mode(1)
+	} else {
+		C.nt_set_gpu_mode(0)
+	}
 }
 
 // ntGPUDispatchCount returns the cuBLAS dispatch count — criterion-4 proof
