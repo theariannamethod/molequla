@@ -246,7 +246,7 @@ var CFG = Config{
 	MaxLineChars:         240,
 	MinNewChars:          480,
 	DNAMinFragmentBytes:  5, // unified DNA emit+consume gate (Fix A)
-	DNAFragmentTargetBytes: 200, // dnaWrite pads fragments toward this (Fix B)
+	DNAFragmentTargetBytes: 600, // dnaWrite pads fragments toward this (Fix B; raised 200→600 2026-06-03 for adult-reach margin, real corpus text not seeding)
 	TieEmbeddings:        true,
 	NLayer:               1,
 	NEmbd:                16,
@@ -2608,6 +2608,16 @@ func (gpt *GPT) ComputeModelEntropy(tok *EvolvingTokenizer, docs []string, sampl
 		}
 		for pos := 0; pos < limit; pos++ {
 			logits := gpt.ForwardStep(ids[pos], pos, keys, values)
+
+			// Edit 3b (2026-06-03): the overload gate (isSustainedOverload, via
+			// SyntropyTracker.Measure → here) reads THIS entropy. The cross-graze
+			// stress was only injected in GenerateResonant (:4611), so the gate
+			// measured a calm, un-grazed distribution and a grazed-overloaded adult
+			// could never trip the gate — the silent reason mitosis never fired.
+			// Mirror the injection so measured entropy reflects the real stress.
+			if gpt.crossField != nil {
+				gpt.crossField.Apply(logits.Data, CFG.CrossGrazeCoef, CFG.CrossGrazeTopN)
+			}
 
 			// softmax
 			maxVal := logits.Data[0]
@@ -5220,19 +5230,55 @@ func (st *SyntropyTracker) LogToDB(db *sql.DB, entropyBefore, entropyAfter float
 		action, nil)
 }
 
-// isSustainedOverload returns true when >75% of entropy_history is above entropy_high AND syntropy_trend < -0.02.
+// isSustainedOverload returns true when >75% of entropy_history is above
+// entropy_high AND the field is either actively dissolving (syntropy_trend <
+// -0.02) OR pinned high (mean recent entropy > entropy_high*1.3). The trend
+// clause alone was a trap: a converged adult sharpens, so its entropy falls
+// and SyntropyTrend goes positive (:5088) — the gate could never fire on a
+// healthy-but-overloaded organism. The disjunction recognises the real stress
+// regime (confused-and-stable, trend ≈ 0). Raise, not downgrade. (2026-06-03)
 func (st *SyntropyTracker) isSustainedOverload() bool {
 	if len(st.EntropyHistory) < CFG.SyntropyWindow {
 		return false
 	}
 	recent := st.EntropyHistory[len(st.EntropyHistory)-CFG.SyntropyWindow:]
 	highCount := 0
+	sum := 0.0
 	for _, e := range recent {
 		if e > CFG.EntropyHigh {
 			highCount++
 		}
+		sum += e
 	}
-	return highCount > int(float64(CFG.SyntropyWindow)*0.75) && st.SyntropyTrend < -0.02
+	meanRecentEntropy := sum / float64(len(recent))
+	return highCount > int(float64(CFG.SyntropyWindow)*0.75) &&
+		(st.SyntropyTrend < -0.02 || meanRecentEntropy > CFG.EntropyHigh*1.3)
+}
+
+// OverloadDebug formats the isSustainedOverload inputs for the [overload] log
+// line (Edit 1, 2026-06-03). Emitted at adult stage so a "reached adult, never
+// divided" run is a MEASURED fact, not an unexplained negative (banned framing).
+func (st *SyntropyTracker) OverloadDebug() string {
+	n := len(st.EntropyHistory)
+	if n == 0 {
+		return "high=0/0 last=- mean=- trend=0 overload=false (no-history)"
+	}
+	w := CFG.SyntropyWindow
+	if n < w {
+		w = n
+	}
+	recent := st.EntropyHistory[n-w:]
+	highCount := 0
+	sum := 0.0
+	for _, e := range recent {
+		if e > CFG.EntropyHigh {
+			highCount++
+		}
+		sum += e
+	}
+	mean := sum / float64(len(recent))
+	return fmt.Sprintf("high=%d/%d last=%.3f mean=%.3f trend=%.4f overload=%v",
+		highCount, w, st.EntropyHistory[n-1], mean, st.SyntropyTrend, st.isSustainedOverload())
 }
 
 // shouldHibernate returns true if a peer has syntropy > 0.05 AND this organism's last 8 burst deltas avg < 0.01.
@@ -6211,6 +6257,13 @@ func backgroundTrainer(db *sql.DB, model *GPT, tok *EvolvingTokenizer, qbuf *Qua
 			fmt.Printf("[syntropy] action=%s | trend=%.4f | field_dev=%.3f | purpose_align=%.3f | lr_mul=%.2f\n",
 				action, syntracker.SyntropyTrend, syntracker.FieldDeviation,
 				syntracker.PurposeAlignment, lrMul)
+
+			// Edit 1 (2026-06-03): at adult stage, log the overload-gate inputs so
+			// the mitosis decision is observable — reached-adult-but-no-divide must
+			// be a measured fact, never an unexplained negative.
+			if syntracker.ModelStage >= len(CFG.GrowthStages)-1 {
+				fmt.Printf("[overload] %s | action=%s\n", syntracker.OverloadDebug(), action)
+			}
 
 			// IMMUNE SYSTEM: snapshot before burst
 			preDirection, preMag := model.GammaContrastiveProjection()

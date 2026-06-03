@@ -2098,3 +2098,91 @@ alongside (standalone, unblocks a future trainable gate).
 
 — polygon Claude (Arianna Method)
 
+---
+
+## 2026-06-03 — Session resume + directive: raise code to README, natural mitosis (polygon)
+
+Previous terminal session closed; context lost. Resumed from memory +
+files. Branch state verified: `molequla-rrpram-inc2` HEAD `2b4fd03`, Inc2
+(low-rank RRPRAM, 22 commits incl. growth-fix Fix A/B/C + GPU-train Inc1)
+is **local-only — NOT on origin/main** (`git merge-base --is-ancestor
+3b54bf5 origin/main` → false; no remote inc2 branch). origin/main top
+`b0f073e`. The inc2 memory milestone says "landed on main `3b54bf5`" —
+that is **stale/wrong**: the work is unpushed, no remote backup. Flag for
+push decision (Oleg's word).
+
+**Directive (Oleg, firm):** README is the prophecy/spec — raise the CODE
+to meet it, do not downgrade README. Yesterday's `2b4fd03` downgraded the
+README (RRPRAM + trainer sections) to match code — wrong direction, same
+lazy pattern Oleg rejected on notorch v2.5.0
+(`memory/milestone_notorch_v250_release_2026_06_02.md`). Then: prokачка
+internally → polygon CPU smoke → RunPod GPU → multi-hour run to
+**NATURAL mitosis**. No corpus-seeding (`cat corpus×3` = clock-cheating).
+"Architecturally impossible" / "honest negative" framings **banned** —
+find the code-raise.
+
+### Mitosis mechanism — studied first-person (file:line)
+
+Two serial gates, neither architecturally impossible:
+- **Gate 1 — reach adult.** Ontogenesis gates on `corpusIngestedTotal`
+  (`molequla.go:2198`), thresholds `GrowthStages` (`:256`): adult = 500K
+  bytes. Post Fix C (`bc4e93d`) the counter is **monotonic** (`+= consumed`
+  per dnaRead `:6303` + seed mass `:4003-4007`) — the old reservoir
+  saturation wall (`os.Stat(corpus).Size()`, capped `MaxCorpusLines=8000`
+  `:245`) is gone. Adult always reachable given enough DNA flow.
+  Throughput: `DNAFragmentTargetBytes=200` (`:249`), dnaWrite pads real
+  text to 200B (`:5549-5560`, Fix B), dnaRead eats all 3 siblings/tick
+  (`:5581-5627`), `TrainTickSeconds=0.25` (`:309`). Seeds: earth 173643 /
+  water 125697 / air 122316 / fire 121900 B. Climb to adult = +326..378K
+  → ~545-630 ticks ≈ hours on GPU. **Measurable, not "guess."** The old
+  ~170 B/tick (05_FIXLOG) was single-org content-only (no siblings) — not
+  the ecology rate.
+- **Gate 2 — sustained overload (the real subtle blocker).** `divide`
+  (`:5168-5176`) = adult + `isSustainedOverload()` + 300s cooldown.
+  `isSustainedOverload()` (`:5224-5235`): >75% of last `SyntropyWindow=8`
+  (`:330`) entropy samples > `EntropyHigh=1.5` (`:317`) AND
+  `SyntropyTrend < -0.02`. A healthy low-entropy adult **never divides** —
+  mitosis is repro-through-stress. Stressor by design = cross-graze DNA
+  flood raising entropy. Open: verify an adult actually enters overload
+  under that stress; tune window/threshold if not.
+
+### Conclusions
+
+Natural mitosis is reachable — two tunable doors, both code not verdict.
+Prokачка: (a) raise DNA throughput so adult takes pod-hours (real output,
+not seeding); (b) instrument/ensure adult enters sustained-overload under
+cross-graze; (c) notorch GPU trainer (Inc1/2, ~2.8× at infant) gives the
+step rate. Broader: full README↔code audit to raise the `--gpu`-vs-notorch
+GPU story, NOTORCH gradient-free stub, Feb-27 EPYC "It Works" timeline,
+line counts, 4-lang parity.
+
+### Audit DONE + Opus pass (2026-06-03)
+
+Ultracode workflow `wf_271f4896-685` complete (16 agents, 1.2M tokens).
+Full fix plan: `~/arianna/_notes/molequla_deepfix/13_FIXPLAN_audited.md`;
+plan + checklist scaffold: `12_PLAN_raise_to_readme.md`.
+
+**Opus audit pass (main loop, not agents)** — personally re-verified the
+edit-gating claims against the tree:
+- Cross-graze bypass CONFIRMED: `ComputeModelEntropy` (:2570) → `ForwardStep`
+  (:2610) → softmax, no `crossField.Apply`; only `.Apply` at :4611
+  (GenerateResonant); feeds overload gate via :5066. The gate measures the
+  un-grazed (calm) distribution — the silent reason adult never divides.
+- Trend-sign trap CONFIRMED: gate needs `SyntropyTrend < -0.02` (:5235) but
+  a converging adult has trend POSITIVE (:5088 `oldMean-newMean`).
+- Adam-ban violation CONFIRMED: `aml_trainer.go:55` emits `TAPE ADAM_STEP`;
+  `CHUCK_STEP` exists (`ariannamethod.c:4267`/:2266) → fix safe.
+- γ⊥δ −0.0005 CONFIRMED absent from code (README:69 unsourced).
+
+**Verdict: natural embryo→adult→mitosis is reachable after Edits 1-3, NOT
+architecturally blocked.** Two defects: trend-sign trap (3a) + cross-graze
+bypass in the entropy measurement (3b). Plus DNA throughput raise (Edit 2,
+`DNAFragmentTargetBytes` 200→600, real organism output, no seeding).
+
+Pre-edit invariant baselines frozen (gate-A green): CPU build PASS, `go test
+.` PASS (`ok 2.530s`), I1 untrained coherence + I2 SPA captured under seed 42
+(`_notes/molequla_deepfix/baselines/`). One decision needs Oleg's word: the
+Stage-B branch push (Inc2 + edits are local-only, origin/main lacks them).
+
+— polygon Claude (Arianna Method)
+
