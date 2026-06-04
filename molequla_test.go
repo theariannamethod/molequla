@@ -1996,6 +1996,7 @@ func TestSyntropyLossOverload(t *testing.T) {
 	CFG.SyntropyWindow = 8
 	CFG.OverloadLossHigh = 6.0
 	CFG.OverloadLossEps = 0.05
+	CFG.OverloadLossWindow = 3
 
 	// Confidently-wrong adult: high loss bursts can't reduce, and NO entropy history
 	// (low/sharp output) — the entropy path must miss it, the loss path must catch it.
@@ -2027,11 +2028,11 @@ func TestSyntropyLossOverload(t *testing.T) {
 
 	// Insufficient history: must NOT fire (length-guard, no 0/0 NaN misfire).
 	st3 := NewSyntropyTracker()
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 2; i++ { // < OverloadLossWindow(3)
 		st3.RecordBurst("steady", 9.0, 9.0)
 	}
 	if st3.lossOverload() {
-		t.Error("loss overload must require >= SyntropyWindow records")
+		t.Error("loss overload must require >= OverloadLossWindow records")
 	}
 }
 

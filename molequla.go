@@ -215,6 +215,7 @@ type Config struct {
 	SyntropyDeltaGrowBoost float64 `json:"syntropy_delta_grow_boost"` // higher delta grow prob when syntropy is good
 	OverloadLossHigh       float64 `json:"overload_loss_high"`        // adult mitosis: mean recent burst loss above this = overwhelmed (confidently-wrong)
 	OverloadLossEps        float64 `json:"overload_loss_eps"`         // adult mitosis: loss-delta floor; meanDelta > -eps = bursts not reducing loss
+	OverloadLossWindow     int     `json:"overload_loss_window"`      // adult mitosis: # recent bursts for lossOverload (decoupled from SyntropyWindow: adult bursts are ~17min apart, so 8 would take ~2.3h; entropy is per-tick, loss is per-burst)
 
 	// consciousness: per-token dissonance feedback
 	DissonanceEMAAlpha      float64 `json:"dissonance_ema_alpha"`       // EMA smoothing for entropy within generation
@@ -335,8 +336,9 @@ var CFG = Config{
 	SyntropyLRBoost:        1.3,
 	SyntropyLRDampen:       0.6,
 	SyntropyDeltaGrowBoost: 0.15,
-	OverloadLossHigh:       6.0,  // healthy adult QuickLoss ~3.6; overwhelmed ~8-9 → 6.0 splits them
+	OverloadLossHigh:       5.0,  // healthy adult QuickLoss ~3.6; overwhelmed adult 5.3 (resume) climbing to 8-9 under cross-graze → 5.0 floor captures the regime, clears healthy
 	OverloadLossEps:        0.05, // loss-delta within ±0.05 of zero = not improving
+	OverloadLossWindow:     3,    // 3 sustained high-loss adult bursts = overwhelmed (burst cadence ~17min at adult; 8 would take ~2.3h)
 
 	// consciousness defaults
 	DissonanceEMAAlpha:       0.3,
@@ -5273,10 +5275,10 @@ func (st *SyntropyTracker) entropyOverload() bool {
 // the loss itself. Reads existing BurstHistory; length-guard FIRST (an empty slice
 // would give 0/0 = NaN, and a NaN comparison could misfire).
 func (st *SyntropyTracker) lossOverload() bool {
-	if len(st.BurstHistory) < CFG.SyntropyWindow {
+	if len(st.BurstHistory) < CFG.OverloadLossWindow {
 		return false
 	}
-	recent := st.BurstHistory[len(st.BurstHistory)-CFG.SyntropyWindow:]
+	recent := st.BurstHistory[len(st.BurstHistory)-CFG.OverloadLossWindow:]
 	sumAfter := 0.0
 	sumDelta := 0.0
 	for _, br := range recent {
@@ -5313,7 +5315,7 @@ func (st *SyntropyTracker) OverloadDebug() string {
 	mean := sum / float64(len(recent))
 	// loss signal (the confidently-wrong path) — mirror lossOverload's window math
 	lmean, ldelta := 0.0, 0.0
-	lw := CFG.SyntropyWindow
+	lw := CFG.OverloadLossWindow
 	if ln := len(st.BurstHistory); ln > 0 {
 		if ln < lw {
 			lw = ln
