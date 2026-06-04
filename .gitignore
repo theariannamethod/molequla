@@ -60,6 +60,12 @@ molequla_ckpt.json
 *.pkl
 *.npz
 
+# run-archive weight checkpoints — hundreds of MB, exceed GitHub's file limit.
+# Run logs / util / DNA snapshots ARE committed; weights are mirrored off-repo.
+parent_ckpt.json
+final_weights.tgz
+child_artifacts.tgz
+
 # Go build artifacts
 macrogpt_bin
 /molequla

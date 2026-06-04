@@ -1,0 +1,41 @@
+[gpu] CUDA backend live — inference matvec routed through cuBLAS
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: earth → corpus: nonames_earth.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[graze] earth cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Joined swarm. 1 peer(s) detected.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] earth wrote 5025 bytes to ecology
+[dna] earth consumed 5040 bytes from 1 files: [water/gen_1780531913_6.txt]
+[trainer] micro-train burst (5040 bytes, novelty 0.11) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0000 | field_dev=0.015 | purpose_align=-0.063 | lr_mul=1.30
+[overload] entropy[high=1/1 mean=2.390 trend=0.0000] loss[mean=0.000 delta=0.0000 n=0] overload=false (e=false l=false) | action=explore
+[notorch] burst complete: 32 steps, avg loss 2.4529 | 18712ms 1.7 steps/s | gpu-dispatch=153427
+[dna] earth wrote 5059 bytes to ecology
+[dna] earth consumed 20460 bytes from 4 files: [air/gen_1780532982_4.txt air/gen_1780532997_5.txt air/gen_1780533002_6.txt air/gen_1780533008_7.txt]
+[dna] earth wrote 5214 bytes to ecology
+[trainer] micro-train burst (20460 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.2062 | field_dev=0.025 | purpose_align=-0.063 | lr_mul=1.30
+[overload] entropy[high=3/3 mean=2.252 trend=0.2062] loss[mean=3.263 delta=0.6292 n=1] overload=false (e=false l=false) | action=explore
+[notorch] burst complete: 32 steps, avg loss 2.8069 | 15897ms 2.0 steps/s | gpu-dispatch=467495
+[dna] earth wrote 5070 bytes to ecology
+[dna] earth consumed 10036 bytes from 2 files: [water/gen_1780535064_13.txt water/gen_1780535080_14.txt]
+[dna] earth wrote 5208 bytes to ecology
+[dna] earth consumed 5046 bytes from 1 files: [water/gen_1780535106_15.txt]
+[dna] earth wrote 5056 bytes to ecology
+[dna] earth consumed 5027 bytes from 1 files: [air/gen_1780535120_13.txt]
+[dna] earth wrote 5032 bytes to ecology
+[dna] earth consumed 15239 bytes from 3 files: [air/gen_1780535128_14.txt air/gen_1780535139_15.txt air/gen_1780535149_16.txt]
+[trainer] micro-train burst (35348 bytes, novelty 0.02) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.3602 | field_dev=0.019 | purpose_align=-0.063 | lr_mul=1.30
+[overload] entropy[high=5/5 mean=2.173 trend=0.3602] loss[mean=3.523 delta=0.3190 n=2] overload=false (e=false l=false) | action=explore
+[notorch] burst complete: 32 steps, avg loss 2.6022 | 21909ms 1.5 steps/s | gpu-dispatch=763058
+[dna] earth wrote 5189 bytes to ecology
+[dna] earth consumed 5038 bytes from 1 files: [water/gen_1780536175_17.txt]
+[dna] earth wrote 5228 bytes to ecology
+[dna] earth wrote 5053 bytes to ecology
+[debug-onto] tick=10 corpus=619608 ingested=570339 stage=5 freeze=0
+[dna] earth wrote 5016 bytes to ecology
+[trainer] micro-train burst (5038 bytes, novelty 0.11) — and lo, it feeds again.
+
+[evolution] Organism shutting down gracefully.

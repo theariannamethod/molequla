@@ -1,0 +1,44 @@
+[gpu] CUDA backend live — inference matvec routed through cuBLAS
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: water → corpus: nonames_water.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[graze] water cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Joined swarm. 1 peer(s) detected.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] water wrote 5030 bytes to ecology
+[dna] water consumed 5008 bytes from 1 files: [fire/gen_1780536856_1.txt]
+[trainer] micro-train burst (5008 bytes, novelty 0.11) — and lo, it feeds again.
+[syntropy] action=steady | trend=0.0000 | field_dev=0.694 | purpose_align=0.065 | lr_mul=1.00
+[overload] entropy[high=0/1 mean=0.558 trend=0.0000] loss[mean=0.000 delta=0.0000 n=0] overload=false (e=false l=false) | action=steady
+[notorch] burst complete: 32 steps, avg loss 3.5383 | 26491ms 1.2 steps/s | gpu-dispatch=131654
+[dna] water wrote 5074 bytes to ecology
+[dna] water consumed 25142 bytes from 5 files: [fire/gen_1780537778_2.txt fire/gen_1780537786_3.txt fire/gen_1780537797_4.txt fire/gen_1780537806_5.txt fire/gen_1780537827_6.txt]
+[dna] water wrote 5092 bytes to ecology
+[dna] water wrote 5004 bytes to ecology
+[dna] water consumed 5207 bytes from 1 files: [air/gen_1780537952_2.txt]
+[dna] water wrote 5044 bytes to ecology
+[dna] water consumed 5001 bytes from 1 files: [air/gen_1780537961_3.txt]
+[dna] water wrote 5011 bytes to ecology
+[dna] water consumed 20540 bytes from 4 files: [air/gen_1780537972_4.txt air/gen_1780537985_5.txt air/gen_1780537992_6.txt air/gen_1780538003_7.txt]
+[trainer] micro-train burst (55890 bytes, novelty 0.01) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0323 | field_dev=0.628 | purpose_align=0.065 | lr_mul=0.60
+[overload] entropy[high=0/3 mean=0.579 trend=-0.0323] loss[mean=9.866 delta=-0.7281 n=1] overload=false (e=false l=false) | action=dampen
+[notorch] burst complete: 32 steps, avg loss 5.3648 | 23487ms 1.4 steps/s | gpu-dispatch=374764
+[dna] water wrote 5031 bytes to ecology
+[dna] water consumed 5010 bytes from 1 files: [air/gen_1780539105_8.txt]
+[dna] water wrote 5079 bytes to ecology
+[dna] water consumed 15331 bytes from 3 files: [air/gen_1780539112_9.txt air/gen_1780539117_10.txt air/gen_1780539135_11.txt]
+[trainer] micro-train burst (20341 bytes, novelty 0.04) — and lo, it feeds again.
+[syntropy] action=steady | trend=0.0014 | field_dev=0.629 | purpose_align=0.065 | lr_mul=1.00
+[overload] entropy[high=0/5 mean=0.563 trend=0.0014] loss[mean=9.866 delta=-0.0449 n=2] overload=false (e=false l=false) | action=steady
+[notorch] burst complete: 32 steps, avg loss 3.9357 | 22302ms 1.4 steps/s | gpu-dispatch=611589
+[dna] water wrote 5117 bytes to ecology
+[dna] water consumed 15271 bytes from 3 files: [air/gen_1780540199_14.txt air/gen_1780540212_15.txt air/gen_1780540215_16.txt]
+[dna] water wrote 5081 bytes to ecology
+[dna] water consumed 15140 bytes from 3 files: [air/gen_1780540223_17.txt air/gen_1780540235_18.txt air/gen_1780540247_19.txt]
+[debug-onto] tick=10 corpus=896477 ingested=843204 stage=5 freeze=0
+[dna] water wrote 5165 bytes to ecology
+[trainer] micro-train burst (30411 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=divide | trend=0.0475 | field_dev=0.661 | purpose_align=0.065 | lr_mul=0.60
+[overload] entropy[high=0/7 mean=0.552 trend=0.0475] loss[mean=9.711 delta=-0.0064 n=3] overload=true (e=false l=true) | action=divide
+[notorch] burst complete: 32 steps, avg loss 5.8463 | 23999ms 1.3 steps/s | gpu-dispatch=847131

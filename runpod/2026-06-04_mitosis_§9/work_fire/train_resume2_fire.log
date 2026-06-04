@@ -1,0 +1,66 @@
+[gpu] CUDA backend live — inference matvec routed through cuBLAS
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: fire → corpus: nonames_fire.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[graze] fire cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Warning: swarm registration failed: database is locked (5) (SQLITE_BUSY)
+[ecology] First organism in the swarm.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] fire wrote 5035 bytes to ecology
+[dna] fire consumed 5025 bytes from 1 files: [earth/gen_1780531927_1.txt]
+[trainer] micro-train burst (5025 bytes, novelty 0.11) — and lo, it feeds again.
+[syntropy] action=steady | trend=0.0000 | field_dev=0.882 | purpose_align=-0.201 | lr_mul=1.00
+[overload] entropy[high=0/1 mean=0.264 trend=0.0000] loss[mean=0.000 delta=0.0000 n=0] overload=false (e=false l=false) | action=steady
+[notorch] burst complete: 32 steps, avg loss 5.1481 | 21897ms 1.5 steps/s | gpu-dispatch=127913
+[dna] fire wrote 5228 bytes to ecology
+[dna] fire consumed 5078 bytes from 1 files: [water/gen_1780532906_7.txt]
+[dna] fire wrote 5105 bytes to ecology
+[dna] fire wrote 5006 bytes to ecology
+[dna] fire wrote 5124 bytes to ecology
+[dna] fire wrote 5045 bytes to ecology
+[dna] fire wrote 5019 bytes to ecology
+[dna] fire consumed 5093 bytes from 1 files: [air/gen_1780532968_3.txt]
+[trainer] micro-train burst (10171 bytes, novelty 0.07) — and lo, it feeds again.
+[syntropy] action=boost | trend=0.0774 | field_dev=0.909 | purpose_align=-0.201 | lr_mul=1.30
+[overload] entropy[high=0/3 mean=0.212 trend=0.0774] loss[mean=9.742 delta=0.0093 n=1] overload=false (e=false l=false) | action=boost
+[notorch] burst complete: 32 steps, avg loss 6.1089 | 27197ms 1.2 steps/s | gpu-dispatch=360746
+[dna] fire wrote 5019 bytes to ecology
+[dna] fire consumed 20146 bytes from 4 files: [water/gen_1780533969_9.txt water/gen_1780533973_10.txt water/gen_1780533979_11.txt water/gen_1780533989_12.txt]
+[dna] fire wrote 5000 bytes to ecology
+[dna] fire wrote 5012 bytes to ecology
+[debug-onto] tick=10 corpus=883740 ingested=593362 stage=5 freeze=0
+[dna] fire wrote 5012 bytes to ecology
+[dna] fire consumed 5199 bytes from 1 files: [air/gen_1780534059_8.txt]
+[dna] fire wrote 5026 bytes to ecology
+[dna] fire consumed 5136 bytes from 1 files: [air/gen_1780534065_9.txt]
+[trainer] micro-train burst (30481 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=boost | trend=0.0200 | field_dev=0.935 | purpose_align=-0.201 | lr_mul=1.30
+[overload] entropy[high=0/5 mean=0.219 trend=0.0200] loss[mean=10.822 delta=0.1941 n=2] overload=false (e=false l=false) | action=boost
+[notorch] burst complete: 32 steps, avg loss 5.8883 | 26518ms 1.2 steps/s | gpu-dispatch=583775
+[dna] fire wrote 5115 bytes to ecology
+[dna] fire consumed 15344 bytes from 3 files: [air/gen_1780534079_10.txt air/gen_1780534091_11.txt air/gen_1780534102_12.txt]
+[dna] fire wrote 5038 bytes to ecology
+[dna] fire wrote 5107 bytes to ecology
+[dna] fire wrote 5067 bytes to ecology
+[dna] fire wrote 5025 bytes to ecology
+[dna] fire wrote 5036 bytes to ecology
+[dna] fire wrote 5067 bytes to ecology
+[dna] fire wrote 5007 bytes to ecology
+[debug-onto] tick=20 corpus=909424 ingested=619041 stage=5 freeze=0
+[trainer] micro-train burst (15344 bytes, novelty 0.05) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0278 | field_dev=0.902 | purpose_align=-0.201 | lr_mul=0.60
+[overload] entropy[high=0/7 mean=0.228 trend=-0.0278] loss[mean=10.987 delta=0.5008 n=3] overload=false (e=false l=false) | action=dampen
+[notorch] burst complete: 32 steps, avg loss 8.0678 | 34091ms 0.9 steps/s | gpu-dispatch=810803
+[dna] fire wrote 5037 bytes to ecology
+[dna] fire consumed 5022 bytes from 1 files: [air/gen_1780535171_17.txt]
+[dna] fire wrote 5154 bytes to ecology
+[dna] fire wrote 5051 bytes to ecology
+[dna] fire wrote 5002 bytes to ecology
+[dna] fire wrote 5090 bytes to ecology
+[dna] fire wrote 5071 bytes to ecology
+[trainer] micro-train burst (5022 bytes, novelty 0.12) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0218 | field_dev=0.925 | purpose_align=-0.201 | lr_mul=0.60
+[overload] entropy[high=0/8 mean=0.219 trend=-0.0218] loss[mean=11.211 delta=0.2201 n=4] overload=false (e=false l=false) | action=dampen
+[notorch] burst complete: 32 steps, avg loss 5.9312 | 12491ms 2.6 steps/s | gpu-dispatch=1044876
+
+[evolution] Organism shutting down gracefully.

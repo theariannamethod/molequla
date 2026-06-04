@@ -29,7 +29,7 @@ WHAT THIS IS:
 - Hybrid attention: content + RRPRAM + learnable sigmoid gate per head
 - Corpus field: 4-gram co-occurrence physics, self-enrichment loop
 - SyntropyTracker: 8 autonomous decisions based on entropy/KL/purpose
-- Mitosis: adults divide under sustained loss-overload, child inherits parent weights — machine-verified on GPU 2026-06-04 (first divide log-preserved; observed cascading to ~50 spawns)
+- Mitosis: adults divide under sustained overload (loss path and entropy path both fire), child inherits parent weights — machine-verified on GPU 2026-06-04 (two divides log-preserved; observed cascading to ~50 spawns)
 - Mycelium: meta-organism coordinator over the ecology via mesh.db field-steering
   (HarmonicNet, FieldPulse, SteeringDissonance, OrganismAttention)
 - NOTORCH: gradient-free delta-training path (implemented, currently dormant —
@@ -71,7 +71,7 @@ The **purpose vector** captures the current direction of learning (mean of last 
 
 ---
 
-## It Works. Here Is Proof.
+## Here Is How It Works
 
 February 27, 2026. Oracle Cloud, 30-core AMD EPYC, 216GB RAM. Four organisms launched at 01:25 UTC.
 
@@ -177,7 +177,7 @@ The [Arianna Method Language](https://github.com/ariannamethod/ariannamethod.ai)
 
 > **Training-engine update (GPU rework, Increments 1–2).** The canonical trainer is now the **notorch** tape (`notorch_trainer.go` + `cgo_notorch.go`): molequla's content + low-rank-RRPRAM transformer built in notorch ops, trained with Chuck, GPU (cuBLAS) on a CUDA build / CPU otherwise. The AML/C path above is the fallback (`--trainer aml`). AML remains the organism's inference / field-physics language; notorch is how it *learns*.
 >
-> On a ≤10M-param organism the GPU was initially launch-bound, not compute-bound — a flood of tiny dispatches (per-head RRPRAM GEMMs, per-parameter grad-norm host-syncs in clip + Chuck, single-thread softmax/CE kernels) left util at 0 %. Two notorch fixes — device-pointer-mode batched grad-norm readback (L1) + GPU-resident MUL/SILU backward (L2) — brought util **0 → 99 %**; a third (block-parallel softmax/CE kernels, L5) lifted throughput from 5-9 to 18-55 steps/s. The full embryo → adult → mitosis run was completed on a single RTX 3090.
+> On a ≤10M-param organism the GPU was initially launch-bound, not compute-bound — a flood of tiny dispatches (per-head RRPRAM GEMMs, per-parameter grad-norm host-syncs in clip + Chuck, single-thread softmax/CE kernels) left util at 0 %. Two notorch fixes — device-pointer-mode batched grad-norm readback (L1) + GPU-resident MUL/SILU backward (L2) — brought util **0 → 99 %**; a third (block-parallel softmax/CE kernels, L5) lifted throughput from 5-9 to 18-55 steps/s. Those util figures come from the dedicated launch-bound fix-verification pod; the four-organism mitosis run itself, sharing one GPU across four concurrent organisms, held nvidia-smi in the 0–20 % band (`capture/util.log`). The full embryo → adult → mitosis run was completed on a single RTX 3090.
 
 Wire: Go (`molequla.go`) → CGO bridge (`cgo_aml.go`) → AML/C engine (`ariannamethod.c`) → AML training wrapper (`aml_trainer.go`). Per training step: `amlPushWeights` (Go → C, named matrices), `amlExec(script)` (forward + backward + optim), `amlPullWeights` (C → Go), `amlClear` (free).
 
@@ -661,7 +661,7 @@ When an **adult** organism is in **sustained overload** — its training bursts 
 4. Child **loads the parent's weights** — born at the parent's stage with the parent's knowledge, not as a fresh embryo
 5. Parent continues running
 
-**Verified (2026-06-04, RTX 3090, no corpus seeding):** an adult (320d / 6L / 8H) reached sustained overload and divided — `[overload] … overload=true (e=false l=true) → action=divide → Child … spawned`, the child loading the parent's adult weights (n_embd 320). The signal that fired is **loss**, not entropy: a converged adult stays sharp (output entropy ~0.22) even while its loss is high (~12), so reproduction-through-stress keys on the loss the bursts cannot bring down, not on output noise. Once one adult divides, its overloaded children inherit the same pressure and divide in turn — observed cascading to ~50 spawns before shutdown (the first divide is the machine-verified, log-preserved event), 0 NaN throughout.
+**Verified (2026-06-04, RTX 3090, no corpus seeding):** an adult (320d / 6L / 8H) reached sustained overload and divided — `[overload] … overload=true (e=false l=true) → action=divide → Child … spawned`, the child loading the parent's adult weights (n_embd 320). The path that fired for this Fire adult is **loss**, not entropy: a converged adult stays sharp (output entropy ~0.22) even while its loss is high (~12), so reproduction-through-stress keys on the loss the bursts cannot bring down, not on output noise. The same run also exercised the original entropy path — an Air adult divided on `entropy[high=8/8 mean=6.256] … overload=true (e=true l=false)` (`work_air/train_resume2_air.log`) — so both gate regimes are real and both produced offspring. Once one adult divides, its overloaded children inherit the same pressure and divide in turn — observed cascading to ~50 spawns before shutdown, of which the archive preserves two divides in full (Fire on the loss path, `org_1780540885_6400`; Air on the entropy path, `org_1780527018_6475`), 0 NaN throughout. All four organisms (fire / air / water / earth) reached Stage 5 / adult in this run (`work_*/train.log stage=5`).
 
 The ecology grows itself.
 

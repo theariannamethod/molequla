@@ -1,0 +1,14 @@
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: earth → corpus: nonames_earth.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[graze] earth cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Joined swarm. 1 peer(s) detected.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] earth wrote 5222 bytes to ecology
+[dna] earth consumed 10091 bytes from 2 files: [air/gen_1780527074_91.txt air/gen_1780527099_92.txt]
+[trainer] micro-train burst (10091 bytes, novelty 0.06) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0000 | field_dev=0.044 | purpose_align=-0.063 | lr_mul=1.30
+[overload] entropy[high=1/1 mean=2.912 trend=0.0000] loss[mean=0.000 delta=0.0000 n=0] overload=false (e=false l=false) | action=explore
+[notorch] burst complete: 32 steps, avg loss 2.8185 | 30319ms 1.1 steps/s | gpu-dispatch=19324
+
+[evolution] Organism shutting down gracefully.

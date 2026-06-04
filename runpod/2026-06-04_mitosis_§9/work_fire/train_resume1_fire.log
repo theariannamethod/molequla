@@ -1,0 +1,17 @@
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: fire → corpus: nonames_fire.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[graze] fire cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Joined swarm. 2 peer(s) detected.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] fire wrote 5007 bytes to ecology
+[dna] fire consumed 10457 bytes from 2 files: [earth/gen_1780527561_1.txt air/gen_1780527591_1.txt]
+[trainer] micro-train burst (10457 bytes, novelty 0.06) — and lo, it feeds again.
+[syntropy] action=steady | trend=0.0000 | field_dev=0.721 | purpose_align=-0.202 | lr_mul=1.00
+[overload] entropy[high=0/1 mean=0.208 trend=0.0000] loss[mean=0.000 delta=0.0000 n=0] overload=false (e=false l=false) | action=steady
+[notorch] burst complete: 32 steps, avg loss 5.3332 | 19186ms 1.7 steps/s | gpu-dispatch=19424
+[dna] fire wrote 5059 bytes to ecology
+[dna] fire consumed 282930 bytes from 56 files: [water/gen_1780527624_1.txt water/gen_1780527774_2.txt water/gen_1780527875_3.txt water/gen_1780527884_4.txt water/gen_1780527946_5.txt water/gen_1780528084_6.txt water/gen_1780528104_7.txt water/gen_1780528257_8.txt water/gen_1780528290_9.txt water/gen_1780528301_10.txt water/gen_1780528423_11.txt water/gen_1780528538_12.txt water/gen_1780528607_13.txt water/gen_1780528620_14.txt water/gen_1780528773_15.txt water/gen_1780528784_16.txt water/gen_1780528944_17.txt water/gen_1780529076_18.txt water/gen_1780529105_19.txt water/gen_1780529136_20.txt water/gen_1780529151_21.txt water/gen_1780529169_22.txt water/gen_1780529249_23.txt water/gen_1780529405_24.txt water/gen_1780529425_25.txt water/gen_1780529523_26.txt water/gen_1780529565_27.txt water/gen_1780529574_28.txt water/gen_1780529686_29.txt water/gen_1780529827_30.txt water/gen_1780529869_31.txt water/gen_1780529888_32.txt water/gen_1780530068_33.txt water/gen_1780530078_34.txt water/gen_1780530218_35.txt water/gen_1780530306_36.txt water/gen_1780530324_37.txt water/gen_1780530339_38.txt water/gen_1780530472_39.txt water/gen_1780530482_40.txt water/gen_1780530591_41.txt water/gen_1780530617_42.txt water/gen_1780530632_43.txt water/gen_1780530675_44.txt water/gen_1780530689_45.txt water/gen_1780530699_46.txt water/gen_1780530814_47.txt water/gen_1780531002_48.txt water/gen_1780531022_49.txt water/gen_1780531122_50.txt water/gen_1780531157_51.txt water/gen_1780531169_52.txt water/gen_1780531314_53.txt water/gen_1780531333_54.txt water/gen_1780531357_55.txt water/gen_1780531369_56.txt]
+[trainer] micro-train burst (282930 bytes, novelty 0.00) — and lo, it feeds again.
+
+[evolution] Organism shutting down gracefully.

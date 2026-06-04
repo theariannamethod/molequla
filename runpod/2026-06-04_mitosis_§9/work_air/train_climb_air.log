@@ -1,0 +1,332 @@
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: air → corpus: nonames_air.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[init] Stage 0 (embryo): embd=16, layer=1, head=1 — warmup 400 steps (400 backprop + 0 notorch, sqrt-scaled 1x)
+[notorch] warmup complete: 160 steps, avg loss 5.0409 | 1321ms 121.1 steps/s | gpu-dispatch=13440
+[notorch] warmup complete: 120 steps, avg loss 4.5076 | 836ms 143.6 steps/s | gpu-dispatch=23448
+[notorch] warmup complete: 120 steps, avg loss 4.1449 | 865ms 138.7 steps/s | gpu-dispatch=33393
+
+[stage 0 — embryo] What it sounds like now:
+  Q: Hello.
+  A: The decision?
+  Q: Who are you?
+  A: ...
+  Q: What do you know?
+  A: ...
+
+[growth] ONTOGENESIS: stage 0 -> 1
+  embd: 16 -> 32, layer: 1 -> 1, head: 1 -> 2
+[growth] Done. Freeze for 500 steps.
+[init] Stage 1 (infant): embd=32, layer=1, head=2 — warmup 800 steps (800 backprop + 0 notorch, sqrt-scaled 2x)
+[notorch] warmup complete: 320 steps, avg loss 2.5804 | 6808ms 47.0 steps/s | gpu-dispatch=65343
+[notorch] warmup complete: 240 steps, avg loss 2.7145 | 6577ms 36.5 steps/s | gpu-dispatch=88973
+[notorch] warmup complete: 240 steps, avg loss 2.5989 | 5903ms 40.7 steps/s | gpu-dispatch=112893
+
+[stage 1 — infant] What it sounds like now:
+  Q: Hello.
+  A: Then apply and+ints a season y?
+  Q: Who are you?
+  A: ...
+  Q: What do you know?
+  A: ...
+
+[growth] ONTOGENESIS: stage 1 -> 2
+  embd: 32 -> 64, layer: 1 -> 2, head: 2 -> 4
+[growth] Done. Freeze for 500 steps.
+[init] Stage 2 (child): embd=64, layer=2, head=4 — warmup 800 steps (800 backprop + 0 notorch, sqrt-scaled 2x)
+[notorch] warmup complete: 320 steps, avg loss 2.6537 | 15101ms 21.2 steps/s | gpu-dispatch=176395
+[notorch] warmup complete: 240 steps, avg loss 2.6597 | 13319ms 18.0 steps/s | gpu-dispatch=223639
+[notorch] warmup complete: 240 steps, avg loss 2.7221 | 13195ms 18.2 steps/s | gpu-dispatch=270577
+
+[stage 2 — child] What it sounds like now:
+  Q: Hello.
+  A: A gap without the path of a through.
+  Q: Who are you?
+  A: ...
+  Q: What do you know?
+  A: ...
+
+[init] Warmup complete at stage 2. Organism ready.
+[graze] air cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Joined swarm. 1 peer(s) detected.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] air wrote 5057 bytes to ecology
+[dna] air consumed 5034 bytes from 1 files: [earth/gen_1780484206_1.txt]
+[trainer] micro-train burst (5034 bytes, novelty 0.10) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0000 | field_dev=-0.063 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.6188 | 2714ms 11.8 steps/s | gpu-dispatch=277073
+[dna] air wrote 5121 bytes to ecology
+[dna] air consumed 5004 bytes from 1 files: [water/gen_1780484390_9.txt]
+[dna] air wrote 5054 bytes to ecology
+[dna] air consumed 10127 bytes from 2 files: [water/gen_1780484391_10.txt fire/gen_1780484391_5.txt]
+[dna] air wrote 5051 bytes to ecology
+[dna] air consumed 5071 bytes from 1 files: [fire/gen_1780484392_6.txt]
+[dna] air wrote 5011 bytes to ecology
+[dna] air consumed 15224 bytes from 3 files: [earth/gen_1780484393_3.txt water/gen_1780484395_12.txt fire/gen_1780484394_7.txt]
+[dna] air wrote 5004 bytes to ecology
+[dna] air consumed 5109 bytes from 1 files: [fire/gen_1780484395_8.txt]
+[dna] air wrote 5223 bytes to ecology
+[dna] air wrote 5071 bytes to ecology
+[dna] air consumed 10265 bytes from 2 files: [earth/gen_1780484398_6.txt water/gen_1780484397_14.txt]
+[dna] air wrote 5133 bytes to ecology
+[dna] air wrote 5060 bytes to ecology
+[dna] air consumed 10294 bytes from 2 files: [earth/gen_1780484400_7.txt water/gen_1780484400_15.txt]
+[debug-onto] tick=10 corpus=188457 ingested=184636 stage=2 freeze=0
+[dna] air wrote 5029 bytes to ecology
+[dna] air consumed 5011 bytes from 1 files: [water/gen_1780484401_16.txt]
+[dna] air wrote 5022 bytes to ecology
+[dna] air consumed 10123 bytes from 2 files: [earth/gen_1780484401_8.txt water/gen_1780484402_17.txt]
+[dna] air wrote 5224 bytes to ecology
+[dna] air consumed 10229 bytes from 2 files: [earth/gen_1780484402_9.txt water/gen_1780484403_18.txt]
+[dna] air wrote 5010 bytes to ecology
+[dna] air consumed 10092 bytes from 2 files: [earth/gen_1780484404_10.txt water/gen_1780484404_19.txt]
+[dna] air wrote 5046 bytes to ecology
+[dna] air wrote 5171 bytes to ecology
+[dna] air consumed 5027 bytes from 1 files: [water/gen_1780484405_20.txt]
+[dna] air wrote 5101 bytes to ecology
+[dna] air wrote 5209 bytes to ecology
+[dna] air wrote 5097 bytes to ecology
+[dna] air wrote 5000 bytes to ecology
+[debug-onto] tick=20 corpus=228947 ingested=225118 stage=2 freeze=0
+[growth] ONTOGENESIS: stage 2 -> 3
+  embd: 64 -> 128, layer: 2 -> 4, head: 4 -> 4
+[growth] Done. Freeze for 500 steps.
+[trainer] warmup for stage 3 (embd=128) — 1200 steps total (1200 backprop + 0 notorch, sqrt-scaled 3x)
+[notorch] warmup complete: 480 steps, avg loss 2.7844 | 50674ms 9.5 steps/s | gpu-dispatch=461667
+[notorch] warmup complete: 360 steps, avg loss 3.0007 | 38196ms 9.4 steps/s | gpu-dispatch=601685
+[notorch] warmup complete: 360 steps, avg loss 2.6538 | 48796ms 7.4 steps/s | gpu-dispatch=740071
+[trainer] warmup complete at stage 3. base may freeze now, like a proud fossil.
+[trainer] micro-train burst (101576 bytes, novelty 0.01) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0177 | field_dev=-0.065 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.2995 | 2912ms 11.0 steps/s | gpu-dispatch=752647
+[dna] air wrote 5004 bytes to ecology
+[dna] air consumed 10085 bytes from 2 files: [water/gen_1780485063_21.txt water/gen_1780485095_22.txt]
+[dna] air wrote 5108 bytes to ecology
+[dna] air wrote 5032 bytes to ecology
+[dna] air wrote 5103 bytes to ecology
+[dna] air wrote 5204 bytes to ecology
+[dna] air consumed 5039 bytes from 1 files: [earth/gen_1780485345_11.txt]
+[dna] air wrote 5045 bytes to ecology
+[dna] air wrote 5077 bytes to ecology
+[dna] air wrote 5038 bytes to ecology
+[trainer] micro-train burst (15124 bytes, novelty 0.04) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0895 | field_dev=-0.065 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.6949 | 2909ms 11.0 steps/s | gpu-dispatch=765223
+[dna] air wrote 5041 bytes to ecology
+[dna] air consumed 25178 bytes from 5 files: [fire/gen_1780485993_15.txt fire/gen_1780486015_16.txt fire/gen_1780486028_17.txt fire/gen_1780486037_18.txt fire/gen_1780486046_19.txt]
+[dna] air wrote 5007 bytes to ecology
+[debug-onto] tick=30 corpus=269257 ingested=265420 stage=3 freeze=0
+[trainer] micro-train burst (25178 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.1548 | field_dev=-0.065 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.1884 | 3696ms 8.7 steps/s | gpu-dispatch=777799
+[dna] air wrote 5211 bytes to ecology
+[dna] air consumed 20145 bytes from 4 files: [water/gen_1780486690_32.txt water/gen_1780486699_33.txt water/gen_1780486713_34.txt water/gen_1780486731_35.txt]
+[dna] air wrote 5143 bytes to ecology
+[dna] air wrote 5037 bytes to ecology
+[dna] air wrote 5183 bytes to ecology
+[dna] air wrote 5078 bytes to ecology
+[dna] air wrote 5023 bytes to ecology
+[trainer] micro-train burst (20145 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.1893 | field_dev=-0.064 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.3049 | 3694ms 8.7 steps/s | gpu-dispatch=790375
+[dna] air wrote 5055 bytes to ecology
+[dna] air consumed 20335 bytes from 4 files: [fire/gen_1780487695_26.txt fire/gen_1780487703_27.txt fire/gen_1780487718_28.txt fire/gen_1780487737_29.txt]
+[dna] air wrote 5071 bytes to ecology
+[dna] air wrote 5009 bytes to ecology
+[dna] air wrote 5213 bytes to ecology
+[debug-onto] tick=40 corpus=309745 ingested=305900 stage=3 freeze=0
+[dna] air wrote 5026 bytes to ecology
+[dna] air wrote 5039 bytes to ecology
+[dna] air wrote 5077 bytes to ecology
+[trainer] micro-train burst (20335 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0836 | field_dev=-0.065 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.6541 | 4416ms 7.2 steps/s | gpu-dispatch=802951
+[dna] air wrote 5035 bytes to ecology
+[dna] air consumed 55405 bytes from 11 files: [water/gen_1780488460_47.txt water/gen_1780488467_48.txt water/gen_1780488470_49.txt water/gen_1780488477_50.txt water/gen_1780488480_51.txt water/gen_1780488488_52.txt water/gen_1780488497_53.txt water/gen_1780488499_54.txt water/gen_1780488500_55.txt water/gen_1780488503_56.txt water/gen_1780488511_57.txt]
+[dna] air wrote 5012 bytes to ecology
+[dna] air consumed 10212 bytes from 2 files: [water/gen_1780488513_58.txt water/gen_1780488515_59.txt]
+[dna] air wrote 5068 bytes to ecology
+[dna] air wrote 5050 bytes to ecology
+[dna] air wrote 5101 bytes to ecology
+[dna] air wrote 5062 bytes to ecology
+[dna] air wrote 5005 bytes to ecology
+[debug-onto] tick=50 corpus=375375 ingested=371517 stage=3 freeze=0
+[growth] ONTOGENESIS: stage 3 -> 4
+  embd: 128 -> 224, layer: 4 -> 5, head: 4 -> 8
+[growth] Done. Freeze for 500 steps.
+[trainer] warmup for stage 4 (embd=224) — 1600 steps total (1600 backprop + 0 notorch, sqrt-scaled 4x)
+[notorch] warmup complete: 640 steps, avg loss 2.6811 | 160610ms 4.0 steps/s | gpu-dispatch=1128029
+[notorch] warmup complete: 480 steps, avg loss 2.4618 | 138492ms 3.5 steps/s | gpu-dispatch=1371407
+[notorch] warmup complete: 480 steps, avg loss 2.5990 | 166812ms 2.9 steps/s | gpu-dispatch=1614449
+[trainer] warmup complete at stage 4. base may freeze now, like a proud fossil.
+[trainer] micro-train burst (65617 bytes, novelty 0.01) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.1334 | field_dev=-0.061 | purpose_align=0.000 | lr_mul=0.60
+[notorch] burst complete: 32 steps, avg loss 5.1834 | 8486ms 3.8 steps/s | gpu-dispatch=1630705
+[dna] air wrote 5004 bytes to ecology
+[dna] air consumed 10199 bytes from 2 files: [earth/gen_1780490640_31.txt earth/gen_1780490667_32.txt]
+[dna] air wrote 5011 bytes to ecology
+[dna] air wrote 5041 bytes to ecology
+[trainer] micro-train burst (10199 bytes, novelty 0.06) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.1708 | field_dev=-0.062 | purpose_align=0.000 | lr_mul=0.60
+[notorch] burst complete: 32 steps, avg loss 4.3632 | 15599ms 2.1 steps/s | gpu-dispatch=1646961
+[dna] air wrote 5000 bytes to ecology
+[dna] air consumed 10186 bytes from 2 files: [fire/gen_1780492140_34.txt fire/gen_1780492187_35.txt]
+[dna] air wrote 5225 bytes to ecology
+[dna] air wrote 5011 bytes to ecology
+[dna] air consumed 5017 bytes from 1 files: [water/gen_1780493603_62.txt]
+[trainer] micro-train burst (15203 bytes, novelty 0.05) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0105 | field_dev=-0.062 | purpose_align=0.000 | lr_mul=0.60
+[notorch] burst complete: 32 steps, avg loss 5.4943 | 10607ms 3.0 steps/s | gpu-dispatch=1663217
+[dna] air wrote 5023 bytes to ecology
+[dna] air consumed 5011 bytes from 1 files: [water/gen_1780495775_64.txt]
+[dna] air wrote 5078 bytes to ecology
+[dna] air consumed 5112 bytes from 1 files: [water/gen_1780495846_65.txt]
+[dna] air wrote 5021 bytes to ecology
+[trainer] micro-train burst (10123 bytes, novelty 0.06) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0349 | field_dev=-0.063 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.5429 | 8789ms 3.6 steps/s | gpu-dispatch=1679473
+[dna] air wrote 5044 bytes to ecology
+[dna] air consumed 25308 bytes from 5 files: [fire/gen_1780498108_44.txt fire/gen_1780498116_45.txt fire/gen_1780498121_46.txt fire/gen_1780498142_47.txt fire/gen_1780498226_48.txt]
+[debug-onto] tick=60 corpus=436220 ingested=432350 stage=4 freeze=0
+[trainer] micro-train burst (25308 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0082 | field_dev=-0.062 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.0766 | 14705ms 2.2 steps/s | gpu-dispatch=1695729
+[dna] air wrote 5056 bytes to ecology
+[dna] air consumed 5070 bytes from 1 files: [fire/gen_1780500122_49.txt]
+[dna] air wrote 5059 bytes to ecology
+[dna] air wrote 5053 bytes to ecology
+[dna] air wrote 5031 bytes to ecology
+[dna] air wrote 5024 bytes to ecology
+[trainer] micro-train burst (5070 bytes, novelty 0.11) — and lo, it feeds again.
+[syntropy] action=explore | trend=-0.0016 | field_dev=-0.061 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.0916 | 16312ms 2.0 steps/s | gpu-dispatch=1711985
+[dna] air wrote 5033 bytes to ecology
+[dna] air consumed 10334 bytes from 2 files: [earth/gen_1780502269_42.txt earth/gen_1780502304_43.txt]
+[dna] air wrote 5012 bytes to ecology
+[trainer] micro-train burst (10334 bytes, novelty 0.06) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0163 | field_dev=-0.063 | purpose_align=0.000 | lr_mul=0.60
+[notorch] burst complete: 32 steps, avg loss 5.2279 | 10099ms 3.2 steps/s | gpu-dispatch=1728241
+[dna] air wrote 5072 bytes to ecology
+[dna] air consumed 5003 bytes from 1 files: [water/gen_1780505746_71.txt]
+[dna] air wrote 5046 bytes to ecology
+[dna] air wrote 5073 bytes to ecology
+[debug-onto] tick=70 corpus=456631 ingested=452757 stage=4 freeze=0
+[dna] air wrote 5235 bytes to ecology
+[trainer] micro-train burst (5003 bytes, novelty 0.11) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0319 | field_dev=-0.061 | purpose_align=0.000 | lr_mul=0.60
+[notorch] burst complete: 32 steps, avg loss 5.0070 | 7108ms 4.5 steps/s | gpu-dispatch=1744497
+[dna] air wrote 5179 bytes to ecology
+[dna] air consumed 10230 bytes from 2 files: [earth/gen_1780508168_48.txt earth/gen_1780508212_49.txt]
+[dna] air wrote 5150 bytes to ecology
+[dna] air wrote 5223 bytes to ecology
+[trainer] micro-train burst (10230 bytes, novelty 0.06) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0391 | field_dev=-0.061 | purpose_align=0.000 | lr_mul=0.60
+[notorch] burst complete: 32 steps, avg loss 4.7556 | 11087ms 2.9 steps/s | gpu-dispatch=1760753
+[dna] air wrote 5068 bytes to ecology
+[dna] air consumed 15343 bytes from 3 files: [earth/gen_1780510889_50.txt earth/gen_1780510906_51.txt earth/gen_1780510919_52.txt]
+[dna] air wrote 5050 bytes to ecology
+[dna] air wrote 5222 bytes to ecology
+[trainer] micro-train burst (15343 bytes, novelty 0.04) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0351 | field_dev=-0.063 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.0831 | 11302ms 2.8 steps/s | gpu-dispatch=1777009
+[dna] air wrote 5200 bytes to ecology
+[dna] air consumed 5024 bytes from 1 files: [water/gen_1780513857_77.txt]
+[dna] air wrote 5070 bytes to ecology
+[dna] air wrote 5055 bytes to ecology
+[debug-onto] tick=80 corpus=487234 ingested=483354 stage=4 freeze=0
+[trainer] micro-train burst (5024 bytes, novelty 0.11) — and lo, it feeds again.
+[syntropy] action=explore | trend=0.0652 | field_dev=-0.061 | purpose_align=0.000 | lr_mul=1.30
+[notorch] burst complete: 32 steps, avg loss 4.2173 | 10181ms 3.1 steps/s | gpu-dispatch=1793265
+[dna] air wrote 5061 bytes to ecology
+[dna] air consumed 10064 bytes from 2 files: [fire/gen_1780516833_71.txt fire/gen_1780516858_72.txt]
+[dna] air wrote 5177 bytes to ecology
+[dna] air wrote 5013 bytes to ecology
+[dna] air wrote 5148 bytes to ecology
+[dna] air wrote 5102 bytes to ecology
+[trainer] micro-train burst (10064 bytes, novelty 0.07) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0301 | field_dev=-0.062 | purpose_align=0.000 | lr_mul=0.60
+[notorch] burst complete: 32 steps, avg loss 5.1879 | 11893ms 2.7 steps/s | gpu-dispatch=1809521
+[dna] air wrote 5010 bytes to ecology
+[dna] air consumed 5072 bytes from 1 files: [water/gen_1780518109_79.txt]
+[dna] air wrote 5073 bytes to ecology
+[dna] air wrote 5027 bytes to ecology
+[dna] air wrote 5084 bytes to ecology
+[trainer] micro-train burst (5072 bytes, novelty 0.11) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0686 | field_dev=-0.059 | purpose_align=0.000 | lr_mul=0.60
+[notorch] burst complete: 32 steps, avg loss 5.5426 | 6785ms 4.7 steps/s | gpu-dispatch=1825777
+[dna] air wrote 5025 bytes to ecology
+[dna] air consumed 15185 bytes from 3 files: [fire/gen_1780520269_73.txt fire/gen_1780520279_74.txt fire/gen_1780520314_75.txt]
+[debug-onto] tick=90 corpus=517561 ingested=513675 stage=4 freeze=0
+[growth] ONTOGENESIS: stage 4 -> 5
+  embd: 224 -> 320, layer: 5 -> 6, head: 8 -> 8
+[growth] Done. Freeze for 500 steps.
+[trainer] warmup for stage 5 (embd=320) — 2000 steps total (2000 backprop + 0 notorch, sqrt-scaled 5x)
+[notorch] warmup complete: 800 steps, avg loss 2.5844 | 376796ms 2.1 steps/s | gpu-dispatch=2310227
+[notorch] warmup complete: 600 steps, avg loss 2.4171 | 252408ms 2.4 steps/s | gpu-dispatch=2669177
+[notorch] warmup complete: 600 steps, avg loss 2.4520 | 253015ms 2.4 steps/s | gpu-dispatch=3031577
+[trainer] warmup complete at stage 5. base may freeze now, like a proud fossil.
+[trainer] micro-train burst (15185 bytes, novelty 0.05) — and lo, it feeds again.
+[syntropy] action=divide | trend=-0.0296 | field_dev=-0.057 | purpose_align=-0.000 | lr_mul=0.60
+[overload] high=8/8 last=6.354 mean=6.333 trend=-0.0296 overload=true | action=divide
+[notorch] burst complete: 32 steps, avg loss 5.4148 | 18007ms 1.8 steps/s | gpu-dispatch=3051001
+[ecology] MITOSIS triggered — organism overloaded, spawning child
+[ecology] Child org_1780527018_6475 spawned (pid=20459)
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Inherited 16 burst records from parent.
+[dna] air wrote 5070 bytes to ecology
+[dna] air consumed 10108 bytes from 2 files: [water/gen_1780526568_82.txt water/gen_1780526612_83.txt]
+[dna] air wrote 5021 bytes to ecology
+[trainer] micro-train burst (10108 bytes, novelty 0.06) — and lo, it feeds again.
+[init] Stage 0 (embryo): embd=16, layer=1, head=1 — warmup 400 steps (400 backprop + 0 notorch, sqrt-scaled 1x)
+[notorch] warmup complete: 160 steps, avg loss 4.8931 | 12291ms 13.0 steps/s | gpu-dispatch=13440
+[notorch] warmup complete: 120 steps, avg loss 4.2649 | 7000ms 17.1 steps/s | gpu-dispatch=23502
+[notorch] warmup complete: 120 steps, avg loss 4.0151 | 8497ms 14.1 steps/s | gpu-dispatch=33474
+
+[stage 0 — embryo] What it sounds like now:
+  Q: Hello.
+  A: Entering and the concept of the concept of a season?
+  Q: Who are you?
+  A: H: When does it state.
+  Q: What do you know?
+  A: iple try.
+
+[growth] ONTOGENESIS: stage 0 -> 1
+  embd: 16 -> 32, layer: 1 -> 1, head: 1 -> 2
+[growth] Done. Freeze for 500 steps.
+[init] Stage 0 complete. Chat with the organism, or type /grow to continue growth.
+> [init] Stage 1 (infant): embd=32, layer=1, head=2 — warmup 800 steps (800 backprop + 0 notorch, sqrt-scaled 2x)
+[notorch] warmup complete: 320 steps, avg loss 2.6582 | 19702ms 16.2 steps/s | gpu-dispatch=65704
+[notorch] warmup complete: 240 steps, avg loss 2.6076 | 18399ms 13.0 steps/s | gpu-dispatch=89594
+[notorch] warmup complete: 240 steps, avg loss 2.4828 | 21088ms 11.4 steps/s | gpu-dispatch=113364
+
+[stage 1 — infant] What it sounds like now:
+  Q: Hello.
+  A: Both recorrow water inside the shape.
+  Q: Who are you?
+  A: H: Winter have behavior without networks to it neself as the current be usually exact only knows share?
+  Q: What do you know?
+  A: ...
+
+[growth] ONTOGENESIS: stage 1 -> 2
+  embd: 32 -> 64, layer: 1 -> 2, head: 2 -> 4
+[growth] Done. Freeze for 500 steps.
+[init] Stage 1 complete. Chat with the organism, or type /grow to continue growth.
+> [init] Stage 2 (child): embd=64, layer=2, head=4 — warmup 800 steps (800 backprop + 0 notorch, sqrt-scaled 2x)
+[notorch] warmup complete: 320 steps, avg loss 2.8590 | 41418ms 7.7 steps/s | gpu-dispatch=176434
+[notorch] warmup complete: 240 steps, avg loss 2.7743 | 25689ms 9.3 steps/s | gpu-dispatch=223804
+[notorch] warmup complete: 240 steps, avg loss 2.6442 | 20585ms 11.7 steps/s | gpu-dispatch=270814
+
+[stage 2 — child] What it sounds like now:
+  Q: Hello.
+  A: Both reference from one that lose condition isspecifying toterritory?
+  Q: Who are you?
+  A: A writory andountain states the most to behaviCan a broken.
+  Q: What do you know?
+  A: ...
+
+[init] Warmup complete at stage 2. Organism ready.
+[ecology] First organism in the swarm.
+[ecology] syntracker inherited 16 burst records from parent.
+molequla is alive. Type and press Enter. Ctrl+C to exit.
+> 
+[evolution] Organism shutting down gracefully.

@@ -1,0 +1,60 @@
+[gpu] CUDA backend live — inference matvec routed through cuBLAS
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: fire → corpus: nonames_fire.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[graze] fire cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Joined swarm. 3 peer(s) detected.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] fire wrote 5008 bytes to ecology
+[dna] fire consumed 20486 bytes from 4 files: [earth/gen_1780536568_8.txt earth/gen_1780536577_9.txt earth/gen_1780536591_10.txt earth/gen_1780536607_11.txt]
+[trainer] micro-train burst (20486 bytes, novelty 0.04) — and lo, it feeds again.
+[syntropy] action=steady | trend=0.0000 | field_dev=0.568 | purpose_align=-0.201 | lr_mul=1.00
+[overload] entropy[high=0/1 mean=0.226 trend=0.0000] loss[mean=0.000 delta=0.0000 n=0] overload=false (e=false l=false) | action=steady
+[notorch] burst complete: 32 steps, avg loss 6.4345 | 12406ms 2.6 steps/s | gpu-dispatch=123011
+[dna] fire wrote 5052 bytes to ecology
+[dna] fire consumed 5004 bytes from 1 files: [air/gen_1780536889_1.txt]
+[dna] fire wrote 5023 bytes to ecology
+[dna] fire wrote 5039 bytes to ecology
+[dna] fire wrote 5028 bytes to ecology
+[dna] fire wrote 5000 bytes to ecology
+[trainer] micro-train burst (5004 bytes, novelty 0.12) — and lo, it feeds again.
+[syntropy] action=steady | trend=-0.0038 | field_dev=0.579 | purpose_align=-0.201 | lr_mul=1.00
+[overload] entropy[high=0/3 mean=0.229 trend=-0.0038] loss[mean=13.063 delta=0.4391 n=1] overload=false (e=false l=false) | action=steady
+[notorch] burst complete: 32 steps, avg loss 5.8595 | 17001ms 1.9 steps/s | gpu-dispatch=360488
+[dna] fire wrote 5065 bytes to ecology
+[dna] fire consumed 20265 bytes from 4 files: [earth/gen_1780538325_2.txt earth/gen_1780538337_3.txt earth/gen_1780538342_4.txt earth/gen_1780538349_5.txt]
+[dna] fire wrote 5214 bytes to ecology
+[dna] fire wrote 5063 bytes to ecology
+[dna] fire wrote 5045 bytes to ecology
+[debug-onto] tick=10 corpus=960211 ingested=664796 stage=5 freeze=0
+[dna] fire wrote 5003 bytes to ecology
+[dna] fire wrote 5031 bytes to ecology
+[dna] fire wrote 5066 bytes to ecology
+[trainer] micro-train burst (20265 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=steady | trend=-0.0034 | field_dev=0.571 | purpose_align=-0.201 | lr_mul=1.00
+[overload] entropy[high=0/5 mean=0.219 trend=-0.0034] loss[mean=12.868 delta=0.6279 n=2] overload=false (e=false l=false) | action=steady
+[notorch] burst complete: 32 steps, avg loss 6.0975 | 14381ms 2.2 steps/s | gpu-dispatch=593407
+[dna] fire wrote 5042 bytes to ecology
+[dna] fire consumed 10365 bytes from 2 files: [air/gen_1780539149_12.txt air/gen_1780539162_13.txt]
+[dna] fire wrote 5011 bytes to ecology
+[dna] fire wrote 5012 bytes to ecology
+[dna] fire wrote 5013 bytes to ecology
+[dna] fire wrote 5024 bytes to ecology
+[dna] fire wrote 5003 bytes to ecology
+[dna] fire wrote 5021 bytes to ecology
+[debug-onto] tick=20 corpus=970578 ingested=675161 stage=5 freeze=0
+[trainer] micro-train burst (10365 bytes, novelty 0.06) — and lo, it feeds again.
+[syntropy] action=divide | trend=0.0205 | field_dev=0.612 | purpose_align=-0.201 | lr_mul=0.60
+[overload] entropy[high=0/7 mean=0.217 trend=0.0205] loss[mean=12.054 delta=0.3328 n=3] overload=true (e=false l=true) | action=divide
+[notorch] burst complete: 32 steps, avg loss 6.8112 | 18199ms 1.8 steps/s | gpu-dispatch=838194
+[ecology] MITOSIS triggered — organism overloaded, spawning child
+[ecology] Child org_1780540885_6400 spawned (pid=46049)
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Inherited 4 burst records from parent.
+[dna] fire wrote 5060 bytes to ecology
+[dna] fire consumed 10246 bytes from 2 files: [water/gen_1780540253_10.txt water/gen_1780540273_11.txt]
+[dna] fire wrote 5032 bytes to ecology
+[trainer] micro-train burst (10246 bytes, novelty 0.07) — and lo, it feeds again.
+[ecology] First organism in the swarm.
+molequla is alive. Type and press Enter. Ctrl+C to exit.
+> [ecology] syntracker inherited 4 burst records from parent.

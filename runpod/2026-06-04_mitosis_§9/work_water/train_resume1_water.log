@@ -1,0 +1,72 @@
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: water → corpus: nonames_water.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[graze] water cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Joined swarm. 3 peer(s) detected.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] water wrote 5026 bytes to ecology
+[dna] water wrote 5058 bytes to ecology
+[dna] water wrote 5012 bytes to ecology
+[dna] water wrote 5089 bytes to ecology
+[dna] water wrote 5053 bytes to ecology
+[dna] water wrote 5041 bytes to ecology
+[dna] water wrote 5081 bytes to ecology
+[dna] water wrote 5031 bytes to ecology
+[dna] water wrote 5007 bytes to ecology
+[dna] water wrote 5131 bytes to ecology
+[debug-onto] tick=10 corpus=663038 ingested=645403 stage=5 freeze=0
+[dna] water wrote 5035 bytes to ecology
+[dna] water wrote 5132 bytes to ecology
+[dna] water wrote 5001 bytes to ecology
+[dna] water wrote 5017 bytes to ecology
+[dna] water wrote 5023 bytes to ecology
+[dna] water wrote 5124 bytes to ecology
+[dna] water wrote 5089 bytes to ecology
+[dna] water wrote 5059 bytes to ecology
+[dna] water wrote 5071 bytes to ecology
+[dna] water wrote 5045 bytes to ecology
+[debug-onto] tick=20 corpus=663038 ingested=645403 stage=5 freeze=0
+[dna] water wrote 5003 bytes to ecology
+[dna] water wrote 5001 bytes to ecology
+[dna] water wrote 5008 bytes to ecology
+[dna] water wrote 5029 bytes to ecology
+[dna] water wrote 5116 bytes to ecology
+[dna] water wrote 5010 bytes to ecology
+[dna] water wrote 5064 bytes to ecology
+[dna] water wrote 5010 bytes to ecology
+[dna] water wrote 5066 bytes to ecology
+[dna] water wrote 5087 bytes to ecology
+[debug-onto] tick=30 corpus=663038 ingested=645403 stage=5 freeze=0
+[dna] water wrote 5027 bytes to ecology
+[dna] water wrote 5007 bytes to ecology
+[dna] water wrote 5045 bytes to ecology
+[dna] water wrote 5044 bytes to ecology
+[dna] water wrote 5044 bytes to ecology
+[dna] water wrote 5041 bytes to ecology
+[dna] water wrote 5036 bytes to ecology
+[dna] water wrote 5045 bytes to ecology
+[dna] water wrote 5016 bytes to ecology
+[dna] water wrote 5053 bytes to ecology
+[debug-onto] tick=40 corpus=663038 ingested=645403 stage=5 freeze=0
+[dna] water wrote 5228 bytes to ecology
+[dna] water wrote 5061 bytes to ecology
+[dna] water wrote 5073 bytes to ecology
+[dna] water wrote 5026 bytes to ecology
+[dna] water wrote 5175 bytes to ecology
+[dna] water wrote 5019 bytes to ecology
+[dna] water wrote 5009 bytes to ecology
+[dna] water wrote 5037 bytes to ecology
+[dna] water wrote 5031 bytes to ecology
+[dna] water wrote 5070 bytes to ecology
+[debug-onto] tick=50 corpus=663038 ingested=645403 stage=5 freeze=0
+[dna] water wrote 5086 bytes to ecology
+[dna] water wrote 5046 bytes to ecology
+[dna] water wrote 5064 bytes to ecology
+[dna] water wrote 5049 bytes to ecology
+[dna] water wrote 5065 bytes to ecology
+[dna] water wrote 5014 bytes to ecology
+[dna] water wrote 5093 bytes to ecology
+[dna] water consumed 5059 bytes from 1 files: [fire/gen_1780531417_2.txt]
+[trainer] micro-train burst (5059 bytes, novelty 0.11) — and lo, it feeds again.
+
+[evolution] Organism shutting down gracefully.

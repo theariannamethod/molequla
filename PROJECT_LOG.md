@@ -2564,6 +2564,13 @@ THE deliverable. fire (adult, embd 320) divided naturally — machine-verified:
 - **Child inherited parent weights** (real lineage): birth.json ckpt_path=parent_ckpt
   .json, n_embd:320 (adult arch, real inheritance via parent_ckpt.json). parent_id = fire. Child alive pid 46049.
 - **0 NaN / 0 panic** whole run. No corpus seeding.
+- **All four reached adult** in this run (`work_{fire,air,water,earth}/train.log stage=5`),
+  not only fire — the 2026-06-03 pre-§9 pod snapshot above (fire-only, others below the
+  500K threshold) is superseded by the §9 run where every organism grew embryo→adult.
+- **Both gate regimes fired.** Besides fire on the loss path above, an air adult divided
+  on the original entropy path: `entropy[high=8/8 mean=6.256 …] overload=true (e=true l=false)`
+  (`work_air/train_resume2_air.log:63` → child `org_1780527018_6475`). Loss and entropy
+  paths both produced offspring in the same run.
 
 3 singularity iterations after deploy: (1) threshold 6→5 + --gpu (gen→GPU, safe:
 dense-matvec only per gpu_forward.go); (2) OverloadLossWindow 8→3 (loss is per-burst
@@ -2585,7 +2592,11 @@ overwhelmed adult weights → re-divide) before shutdown — emergent prolific
 reproduction under sustained overwhelm; production wants a post-divide cooldown
 guard. Pod b3vpvlpo1xd1xz STOPPED (runpodctl pod list = [], 0 billing) after full
 mirror: ~/arianna/molequla/runpod/2026-06-04_mitosis_§9/ (1.8GB — 4 evolved org
-ckpts + first-child + §9 logs/util/voice). Mitosis milestone closed. Next: paper §9.
+ckpts + first-child + §9 logs/util/voice). The archive preserves **two** divides in
+full — fire on the loss path (`org_1780540885_6400`, `work_fire/train.log:51`) and air
+on the entropy path (`org_1780527018_6475`, `work_air/train_climb_air.log:273`,
+`e=true l=false high=8/8`); the ~50 figure is the runtime-observed cascade, not a
+per-event preserved count. Mitosis milestone closed. Next: paper §9.
 
 ### Mycelium restored + de-numpy'd — post-§9 upgrade (2026-06-04)
 

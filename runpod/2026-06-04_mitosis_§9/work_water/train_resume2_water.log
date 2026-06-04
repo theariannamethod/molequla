@@ -1,0 +1,55 @@
+[gpu] CUDA backend live — inference matvec routed through cuBLAS
+[notorch] notorch trainer on GPU — tape dispatching to cuBLAS
+[ecology] Element: water → corpus: nonames_water.txt
+[evolution] Autonomous evolution mode — organism will grow through all stages without pause.
+[graze] water cross-organism injection enabled (coef=2.00 topN=8)
+[ecology] Joined swarm. 2 peer(s) detected.
+molequla is alive. [evolution] Autonomous mode — background trainer running. Ctrl+C to stop.
+[dna] water wrote 5055 bytes to ecology
+[dna] water wrote 5069 bytes to ecology
+[dna] water wrote 5112 bytes to ecology
+[dna] water wrote 5040 bytes to ecology
+[dna] water wrote 5056 bytes to ecology
+[dna] water wrote 5040 bytes to ecology
+[dna] water consumed 5122 bytes from 1 files: [air/gen_1780531905_1.txt]
+[trainer] micro-train burst (5122 bytes, novelty 0.11) — and lo, it feeds again.
+[syntropy] action=steady | trend=0.0000 | field_dev=0.685 | purpose_align=0.064 | lr_mul=1.00
+[overload] entropy[high=0/1 mean=0.607 trend=0.0000] loss[mean=0.000 delta=0.0000 n=0] overload=false (e=false l=false) | action=steady
+[notorch] burst complete: 32 steps, avg loss 3.8906 | 19400ms 1.6 steps/s | gpu-dispatch=127612
+[dna] water wrote 5078 bytes to ecology
+[dna] water consumed 5035 bytes from 1 files: [fire/gen_1780531974_1.txt]
+[dna] water wrote 5179 bytes to ecology
+[dna] water consumed 20189 bytes from 4 files: [air/gen_1780532956_2.txt fire/gen_1780532928_4.txt fire/gen_1780532940_5.txt fire/gen_1780532945_6.txt]
+[trainer] micro-train burst (25224 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=boost | trend=0.1090 | field_dev=0.644 | purpose_align=0.064 | lr_mul=1.30
+[overload] entropy[high=0/3 mean=0.534 trend=0.1090] loss[mean=8.793 delta=-1.7059 n=1] overload=false (e=false l=false) | action=boost
+[notorch] burst complete: 32 steps, avg loss 3.6007 | 9898ms 3.2 steps/s | gpu-dispatch=355221
+[dna] water wrote 5051 bytes to ecology
+[dna] water consumed 10273 bytes from 2 files: [earth/gen_1780533507_2.txt earth/gen_1780533538_3.txt]
+[dna] water wrote 5015 bytes to ecology
+[debug-onto] tick=10 corpus=708725 ingested=686022 stage=5 freeze=0
+[dna] water wrote 5050 bytes to ecology
+[dna] water wrote 5030 bytes to ecology
+[trainer] micro-train burst (10273 bytes, novelty 0.06) — and lo, it feeds again.
+[syntropy] action=boost | trend=0.0657 | field_dev=0.626 | purpose_align=0.064 | lr_mul=1.30
+[overload] entropy[high=0/5 mean=0.525 trend=0.0657] loss[mean=8.795 delta=-0.6364 n=2] overload=false (e=false l=false) | action=boost
+[notorch] burst complete: 32 steps, avg loss 4.3190 | 19404ms 1.6 steps/s | gpu-dispatch=591229
+[dna] water wrote 5013 bytes to ecology
+[dna] water consumed 40462 bytes from 8 files: [fire/gen_1780534967_13.txt fire/gen_1780534979_14.txt fire/gen_1780534985_15.txt fire/gen_1780534992_16.txt fire/gen_1780535000_17.txt fire/gen_1780535004_18.txt fire/gen_1780535016_19.txt fire/gen_1780535020_20.txt]
+[dna] water wrote 5023 bytes to ecology
+[dna] water wrote 5046 bytes to ecology
+[dna] water consumed 5070 bytes from 1 files: [earth/gen_1780535090_4.txt]
+[trainer] micro-train burst (45532 bytes, novelty 0.02) — and lo, it feeds again.
+[syntropy] action=boost | trend=0.0203 | field_dev=0.629 | purpose_align=0.064 | lr_mul=1.30
+[overload] entropy[high=0/7 mean=0.522 trend=0.0203] loss[mean=8.916 delta=-0.3786 n=3] overload=false (e=false l=false) | action=boost
+[notorch] burst complete: 32 steps, avg loss 4.4565 | 15413ms 2.1 steps/s | gpu-dispatch=830075
+[dna] water wrote 5033 bytes to ecology
+[dna] water consumed 15371 bytes from 3 files: [air/gen_1780536106_18.txt air/gen_1780536120_19.txt air/gen_1780536133_20.txt]
+[dna] water wrote 5038 bytes to ecology
+[dna] water consumed 15162 bytes from 3 files: [air/gen_1780536151_21.txt air/gen_1780536155_22.txt air/gen_1780536161_23.txt]
+[trainer] micro-train burst (30533 bytes, novelty 0.03) — and lo, it feeds again.
+[syntropy] action=dampen | trend=-0.0353 | field_dev=0.623 | purpose_align=0.064 | lr_mul=0.60
+[overload] entropy[high=0/8 mean=0.522 trend=-0.0353] loss[mean=8.731 delta=-0.5260 n=4] overload=false (e=false l=false) | action=dampen
+[notorch] burst complete: 32 steps, avg loss 5.7115 | 12990ms 2.5 steps/s | gpu-dispatch=1058092
+
+[evolution] Organism shutting down gracefully.
