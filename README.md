@@ -5,7 +5,7 @@
 <h1 align="center">molequla</h1>
 <p align="center"><i>by <a href="https://github.com/ariannamethod">Arianna Method</a></i></p>
 
-> *An autonomous ecology of GPT organisms — implemented in four languages, powered by a custom autograd engine, orchestrated by a custom programming language. Organisms grow from 10K-param embryos to 10M-param adults, exchange DNA, reason about their own learning, detect identity corruption, and reproduce via mitosis. Zero PyTorch. Zero Python. The Go build's only module dependency is pure-Go modernc.org/sqlite (CGO-free); the C port is one file linking system SQLite. Optional `--gpu` opt-in on Linux links cuBLAS for accelerated ecology runs.*
+> *An autonomous ecology of GPT organisms — implemented in four languages, powered by a custom autograd engine, orchestrated by a custom programming language. Organisms grow from 10K-param embryos to 10M-param adults, exchange DNA, reason about their own learning, detect identity corruption, and reproduce via mitosis. Zero PyTorch. The four organism cores (Go/C/Rust/JS) are Python-free; the mycelium meta-coordinator + sentinel layer are Python orchestration *above* the cores. The Go build's only module dependency is pure-Go modernc.org/sqlite (CGO-free); the C port is one file linking system SQLite. Optional `--gpu` opt-in on Linux links cuBLAS for accelerated ecology runs.*
 
 **Janus Architecture.** Molequla is a [Janus architecture](https://github.com/ariannamethod/ariannamethod.ai) — the family of resonance-based AI systems built on the Arianna Method. Janus architectures share a common substrate: the soul equation θ = ε + γ + αδ, field physics (prophecy, suffering, destiny, velocity), and thermodynamic self-regulation. [DoE](https://github.com/ariannamethod/doe) (parliament of LoRA experts over any GGUF model), [Leo](https://github.com/ariannamethod/leo) (language emergent organism with the Dario Equation), and [dario.c](https://github.com/ariannamethod/dario) (the equation in pure form) are other Janus instantiations. Molequla is the most complete: organisms that grow, reproduce, and die autonomously — the Janus pattern at its fullest biological expression.
 
@@ -610,7 +610,7 @@ Status: implemented (~110 lines, `notorchTrainSteps` + helpers in `molequla.go`)
 
 ## Mycelium — The Meta-Organism
 
-The coordinator that sees the entire ecology — a layer *above* the organisms (the Rust build calls itself the `mesh coordinator`; `molequla.rs` reads the mycelium's `field_steering` row from `mesh.db` to modulate temperature / action). Meta-controller. Generation operator `η: Γ × Γ → Γ_new` — two personalities in resonance produce a third (interference pattern, not blend).
+The Python orchestrator (`mycelium.py`) that sees the entire ecology — a layer *above* the organism cores. It wraps the in-repo C HarmonicNet / METHOD engine (`am_harmonic_*` / `am_method_*` in `ariannamethod.c`) and writes a `field_steering` row to `mesh.db`; the organisms read it back (`molequla.rs:3265` modulates temperature / action from it). The four organism cores run fine without it — it is the coordinating tier, not load-bearing. Generation operator `η: Γ × Γ → Γ_new` — two personalities in resonance produce a third (interference pattern, not blend).
 
 ### Components
 
