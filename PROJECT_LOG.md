@@ -2587,3 +2587,20 @@ reproduction under sustained overwhelm; production wants a post-divide cooldown
 guard. Pod b3vpvlpo1xd1xz STOPPED (runpodctl pod list = [], 0 billing) after full
 mirror: ~/arianna/molequla/runpod/2026-06-04_mitosis_§9/ (1.8GB — 4 evolved org
 ckpts + first-child + §9 logs/util/voice). Mitosis milestone closed. Next: paper §9.
+
+### Mycelium restored + de-numpy'd — post-§9 upgrade (2026-06-04)
+
+Python is sanctioned for molequla's mycelium / sentinel / orchestration tier (the
+coordinating layer above the Go/C/Rust/JS organism cores). Restored into the repo:
+`mycelium.py` (the orchestrator; steering chain mycelium → mesh.db → Rust, wrapping
+the in-repo C HarmonicNet/METHOD engine `am_harmonic_*`/`am_method_*`),
+`ariannamethod/sentinel.py` + `method.py` (compiler-side operators, ctypes bindings
+to libaml), and `standalone-py/molequla.py` (the original Python molequla — first
+version by Oleg, refined by Claude Code, deprecated for speed — historical artifact,
+wired to nothing). `mycelium.py` de-numpy'd → pure stdlib (math/struct/random),
+behavior-equivalent, numpy dependency dropped. Docks with the current molequla at the
+mesh.db contract: writes `field_steering`, reads the SwarmRegistry `organisms` table
+(schema-compatible). Post-paper upgrade — the §9 mitosis run did not use mycelium and
+the paper does not reference it.
+
+— polygon Claude (Arianna Method)
