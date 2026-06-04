@@ -25,9 +25,12 @@ part of molequla. the method that connects organisms.
 import argparse
 import asyncio
 import json
+import math
 import os
+import random
 import signal
 import sqlite3
+import struct
 import sys
 import threading
 import time
@@ -36,7 +39,6 @@ from pathlib import Path
 # Add parent dir so ariannamethod is importable
 sys.path.insert(0, str(Path(__file__).parent))
 
-import numpy as np
 try:
     import aiosqlite
 except ImportError:
@@ -277,11 +279,11 @@ class FieldPulse:
 
         # Entropy: diversity of organism states (Shannon)
         if len(organisms) >= 2:
-            entropies = np.array([o.entropy for o in organisms])
+            entropies = [o.entropy for o in organisms]
             # Normalize to probabilities
-            total = np.sum(entropies) + 1e-10
-            probs = entropies / total
-            self.entropy = float(-np.sum(probs * np.log(probs + 1e-10)))
+            total = sum(entropies) + 1e-10
+            probs = [e / total for e in entropies]
+            self.entropy = float(-sum(p * math.log(p + 1e-10) for p in probs))
         elif organisms:
             self.entropy = 0.0
         else:
@@ -451,17 +453,18 @@ class MyceliumGamma:
     N_HARMONICS = 8
 
     def __init__(self):
-        self.gamma = np.zeros(self.DIM, dtype=np.float64)
+        self.gamma = [0.0] * self.DIM
         self.magnitude = 0.0
         self._step = 0
 
         # fixed directions in gamma-space — one per action type
         # deterministic seed so gamma is reproducible across restarts
-        rng = np.random.RandomState(42)
+        rng = random.Random(42)
         self._action_dirs = {}
         for action in ["amplify", "dampen", "ground", "explore", "realign", "sustain", "wait"]:
-            v = rng.randn(self.DIM).astype(np.float64)
-            v /= np.linalg.norm(v)
+            v = [rng.gauss(0.0, 1.0) for _ in range(self.DIM)]
+            v_norm = math.sqrt(sum(x * x for x in v))
+            v = [x / v_norm for x in v]
             self._action_dirs[action] = v
 
     def imprint(self, action, strength, effect):
@@ -477,46 +480,47 @@ class MyceliumGamma:
         """
         self._step += 1
         t = self._step
-        direction = self._action_dirs.get(action, np.zeros(self.DIM))
+        direction = self._action_dirs.get(action, [0.0] * self.DIM)
 
         # harmonic weight — superposition of frequencies
         weight = 0.0
         for k in range(1, self.N_HARMONICS + 1):
-            decay = np.exp(-0.01 * k)  # higher freq decays faster per step
-            weight += np.cos(2 * np.pi * k * t / 64.0) * decay / k
+            decay = math.exp(-0.01 * k)  # higher freq decays faster per step
+            weight += math.cos(2 * math.pi * k * t / 64.0) * decay / k
 
         scale = strength * (1.0 + abs(effect)) * weight
-        self.gamma += scale * direction
+        self.gamma = [g + scale * d for g, d in zip(self.gamma, direction)]
 
         # let magnitude grow (it's meaningful — how much personality has formed)
         # but cap to prevent explosion
-        mag = np.linalg.norm(self.gamma)
+        mag = math.sqrt(sum(x * x for x in self.gamma))
         if mag > 1e-8:
             self.magnitude = float(mag)
             if mag > 10.0:
-                self.gamma *= 10.0 / mag
+                self.gamma = [g * (10.0 / mag) for g in self.gamma]
                 self.magnitude = 10.0
 
     def cosine_with(self, other_gamma):
         """cosine similarity with an organism's gamma vector."""
         if self.magnitude < 1e-8:
             return 0.0
-        other = np.asarray(other_gamma, dtype=np.float64)
-        other_mag = np.linalg.norm(other)
+        other = list(other_gamma)
+        other_mag = math.sqrt(sum(x * x for x in other))
         if other_mag < 1e-8:
             return 0.0
         dim = min(len(self.gamma), len(other))
-        return float(np.dot(self.gamma[:dim], other[:dim]) / (self.magnitude * other_mag))
+        dot = sum(a * b for a, b in zip(self.gamma[:dim], other[:dim]))
+        return float(dot / (self.magnitude * other_mag))
 
     def direction(self):
         """unit vector, or zero if no personality yet."""
         if self.magnitude < 1e-8:
-            return np.zeros(self.DIM)
-        return self.gamma / self.magnitude
+            return [0.0] * self.DIM
+        return [g / self.magnitude for g in self.gamma]
 
     def as_blob(self):
         """serialize for mesh.db."""
-        return self.gamma.tobytes()
+        return struct.pack(f"<{len(self.gamma)}d", *self.gamma)
 
     def dominant_tendency(self):
         """which action direction is gamma most aligned with?"""
@@ -525,7 +529,7 @@ class MyceliumGamma:
         best_action, best_cos = "none", -1.0
         d = self.direction()
         for action, v in self._action_dirs.items():
-            cos = float(np.dot(d, v))
+            cos = float(sum(a * b for a, b in zip(d, v)))
             if cos > best_cos:
                 best_cos = cos
                 best_action = action
@@ -559,13 +563,13 @@ class HarmonicNet:
         self.lib = lib  # C library reference (for HarmonicNet C acceleration)
         self._entropy_history = []
         self._max_history = 64
-        self._last_harmonics = np.zeros(self.N_HARMONICS)
+        self._last_harmonics = [0.0] * self.N_HARMONICS
         self._last_resonance = []
 
     def forward(self, organisms, field_entropy, field_coherence, field_syntropy, step):
         """
         One forward pass. No backprop ever.
-        Uses C acceleration when available (libaml.so), falls back to numpy.
+        Uses C acceleration when available (libaml.so), falls back to pure Python.
 
         Returns dict:
             action_bias: {action_name: score} — suggested emphasis
@@ -589,13 +593,14 @@ class HarmonicNet:
 
         # ── Layer 1: Harmonic embedding ──
         # Fourier decomposition of entropy history
-        harmonics = np.zeros(self.N_HARMONICS)
+        harmonics = [0.0] * self.N_HARMONICS
         T = len(self._entropy_history)
         if T >= 4:
-            signal = np.array(self._entropy_history)
+            signal = list(self._entropy_history)
             for k in range(self.N_HARMONICS):
-                t = np.arange(T, dtype=np.float64)
-                harmonics[k] = np.sum(signal * np.sin(2 * np.pi * (k + 1) * t / T)) / T
+                acc = sum(signal[i] * math.sin(2 * math.pi * (k + 1) * i / T)
+                          for i in range(T))
+                harmonics[k] = acc / T
         self._last_harmonics = harmonics
 
         # ── Layer 2: Correlation matrix ──
@@ -604,36 +609,45 @@ class HarmonicNet:
         gammas = []
         for o in organisms:
             if o.gamma_direction and len(o.gamma_direction) >= self.dim * 8:
-                g = np.frombuffer(o.gamma_direction[:self.dim * 8], dtype=np.float64)
-                gammas.append(g[:self.dim] if len(g) >= self.dim else np.pad(g, (0, self.dim - len(g))))
+                raw = o.gamma_direction[:self.dim * 8]
+                g = list(struct.unpack(f"<{len(raw) // 8}d", raw))
+                if len(g) >= self.dim:
+                    gammas.append(g[:self.dim])
+                else:
+                    gammas.append(g + [0.0] * (self.dim - len(g)))
             else:
-                gammas.append(np.zeros(self.dim))
-        gammas = np.array(gammas)
+                gammas.append([0.0] * self.dim)
 
-        norms = np.linalg.norm(gammas, axis=1, keepdims=True)
-        norms = np.maximum(norms, 1e-8)
-        normed = gammas / norms
-        corr = normed @ normed.T  # n×n correlation matrix
+        # Per-row L2 normalise
+        normed = []
+        for g in gammas:
+            norm = math.sqrt(sum(x * x for x in g))
+            norm = max(norm, 1e-8)
+            normed.append([x / norm for x in g])
+        # n×n correlation matrix (pairwise dot of normalised rows)
+        corr = [[sum(a * b for a, b in zip(normed[i], normed[j]))
+                 for j in range(n)] for i in range(n)]
 
         # ── Layer 3: Phase aggregation ──
         # Each organism's "phase" = entropy relative to field mean
-        entropies = np.array([o.entropy for o in organisms])
-        mean_ent = np.mean(entropies) if len(entropies) > 0 else 1.0
-        phases = entropies - mean_ent
+        entropies = [o.entropy for o in organisms]
+        mean_ent = (sum(entropies) / len(entropies)) if len(entropies) > 0 else 1.0
+        phases = [e - mean_ent for e in entropies]
 
         # Resonance: organisms that correlate AND have similar phase
-        resonance = np.zeros(n)
+        resonance = [0.0] * n
         for i in range(n):
             for j in range(n):
                 if i != j:
-                    resonance[i] += corr[i, j] * np.exp(-abs(phases[i] - phases[j]))
+                    resonance[i] += corr[i][j] * math.exp(-abs(phases[i] - phases[j]))
             if n > 1:
                 resonance[i] /= (n - 1)
-        self._last_resonance = resonance.tolist()
+        self._last_resonance = list(resonance)
 
         # ── Output: action biases from harmonic + resonance analysis ──
         action_bias = {}
-        dominant_freq = int(np.argmax(np.abs(harmonics))) if T >= 4 else 0
+        dominant_freq = (max(range(len(harmonics)), key=lambda i: abs(harmonics[i]))
+                         if T >= 4 else 0)
         dominant_amp = float(harmonics[dominant_freq]) if T >= 4 else 0.0
 
         # Slow trend (low frequency dominant)
@@ -648,13 +662,15 @@ class HarmonicNet:
             action_bias["ground"] = min(abs(float(harmonics[dominant_freq])) * 3, 1.0)
 
         # Low resonance → organisms aren't talking → explore
-        mean_res = float(np.mean(resonance)) if len(resonance) > 0 else 0.0
+        mean_res = (float(sum(resonance) / len(resonance))
+                    if len(resonance) > 0 else 0.0)
         if mean_res < 0.3:
             action_bias["explore"] = max(action_bias.get("explore", 0), 0.5)
 
         # High resonance variance → some connected, some not → realign
         if n > 1:
-            res_var = float(np.var(resonance))
+            r_mean = sum(resonance) / len(resonance)
+            res_var = float(sum((v - r_mean) ** 2 for v in resonance) / len(resonance))
             if res_var > 0.1:
                 action_bias["realign"] = min(res_var * 3, 1.0)
 
@@ -665,8 +681,8 @@ class HarmonicNet:
         return {
             "action_bias": action_bias,
             "strength_mod": float(strength_mod),
-            "harmonics": harmonics.tolist(),
-            "resonance": resonance.tolist(),
+            "harmonics": list(harmonics),
+            "resonance": list(resonance),
             "dominant_freq": dominant_freq,
         }
 
@@ -688,10 +704,12 @@ class HarmonicNet:
         for o in organisms:
             gamma_f32 = None
             if o.gamma_direction and len(o.gamma_direction) >= self.dim * 8:
-                g64 = np.frombuffer(o.gamma_direction[:self.dim * 8], dtype=np.float64)
-                gamma_f32 = g64[:self.dim].astype(np.float32)
+                raw = o.gamma_direction[:self.dim * 8]
+                g64 = list(struct.unpack(f"<{len(raw) // 8}d", raw))
+                gamma_f32 = g64[:self.dim]
             elif o.gamma_direction and len(o.gamma_direction) >= self.dim * 4:
-                gamma_f32 = np.frombuffer(o.gamma_direction[:self.dim * 4], dtype=np.float32)
+                raw = o.gamma_direction[:self.dim * 4]
+                gamma_f32 = list(struct.unpack(f"<{len(raw) // 4}f", raw))
 
             if gamma_f32 is not None and len(gamma_f32) > 0:
                 arr = (ctypes.c_float * len(gamma_f32))(*gamma_f32)
@@ -715,7 +733,7 @@ class HarmonicNet:
         strength_mod = float(result.strength_mod)
         dominant_freq = int(result.dominant_freq)
 
-        self._last_harmonics = np.array(harmonics)
+        self._last_harmonics = list(harmonics)
         self._last_resonance = resonance
 
         # ── Action biases (same logic as Python, but using C-computed values) ──
@@ -731,12 +749,13 @@ class HarmonicNet:
             elif dominant_freq >= 4:
                 action_bias["ground"] = min(abs(harmonics[dominant_freq]) * 3, 1.0)
 
-        mean_res = np.mean(resonance) if resonance else 0.0
+        mean_res = (sum(resonance) / len(resonance)) if resonance else 0.0
         if mean_res < 0.3:
             action_bias["explore"] = max(action_bias.get("explore", 0), 0.5)
 
         if n > 1 and resonance:
-            res_var = float(np.var(resonance))
+            r_mean = sum(resonance) / len(resonance)
+            res_var = float(sum((v - r_mean) ** 2 for v in resonance) / len(resonance))
             if res_var > 0.1:
                 action_bias["realign"] = min(res_var * 3, 1.0)
 
@@ -827,8 +846,10 @@ class MyceliumSyntropy:
         # 1. Syntropy trend: field entropy trending down = organizing
         if len(self.entropy_history) >= 4:
             half = len(self.entropy_history) // 2
-            old_mean = float(np.mean(self.entropy_history[:half]))
-            new_mean = float(np.mean(self.entropy_history[half:]))
+            old_part = self.entropy_history[:half]
+            new_part = self.entropy_history[half:]
+            old_mean = float(sum(old_part) / len(old_part)) if old_part else 0.0
+            new_mean = float(sum(new_part) / len(new_part)) if new_part else 0.0
             self.syntropy_trend = old_mean - new_mean
 
         # 2. Decision entropy: diversity of recent actions
@@ -840,7 +861,7 @@ class MyceliumSyntropy:
                 counts[a] = counts.get(a, 0) + 1
             total = sum(counts.values())
             probs = [c / total for c in counts.values()]
-            self.decision_entropy = float(-sum(p * np.log(p + 1e-10) for p in probs))
+            self.decision_entropy = float(-sum(p * math.log(p + 1e-10) for p in probs))
 
         # 3. Per-action effectiveness
         eff_raw = {}
@@ -852,13 +873,19 @@ class MyceliumSyntropy:
             eff_raw[a].append(score)
         self.effectiveness = {}
         for a, vals in eff_raw.items():
-            self.effectiveness[a] = float(np.mean(vals[-self.window:]))
+            window_vals = vals[-self.window:]
+            self.effectiveness[a] = float(sum(window_vals) / len(window_vals)) if window_vals else 0.0
 
         # 4. Purpose: how strongly and consistently am I steering
         if len(self.decision_history) >= 2:
             deltas = [d["delta_s"] for d in self.decision_history[-self.window:]]
-            self.purpose_magnitude = float(abs(np.mean(deltas)))
-            self.purpose_alignment = float(1.0 / (1.0 + np.std(deltas))) if len(deltas) >= 2 else 0.0
+            d_mean = sum(deltas) / len(deltas) if deltas else 0.0
+            self.purpose_magnitude = float(abs(d_mean))
+            if len(deltas) >= 2:
+                d_std = math.sqrt(sum((v - d_mean) ** 2 for v in deltas) / len(deltas))
+                self.purpose_alignment = float(1.0 / (1.0 + d_std))
+            else:
+                self.purpose_alignment = 0.0
 
     def measure(self):
         """current metrics as dict."""
@@ -1210,28 +1237,32 @@ class Mycelium:
                 for o in self.method.organisms:
                     if o.gamma_direction and len(o.gamma_direction) > 0:
                         try:
-                            arr = np.frombuffer(o.gamma_direction, dtype=np.float64)
-                            norm = np.linalg.norm(arr)
+                            raw = o.gamma_direction
+                            n_doubles = len(raw) // 8
+                            arr = list(struct.unpack(f"<{n_doubles}d", raw[:n_doubles * 8]))
+                            norm = math.sqrt(sum(x * x for x in arr))
                             if norm > 1e-12:
-                                gammas[o.id] = arr / norm
+                                gammas[o.id] = [x / norm for x in arr]
                         except Exception:
                             pass
                 if len(gammas) >= 2:
                     vecs = list(gammas.values())
                     min_len = min(len(v) for v in vecs)
-                    mean_gamma = np.mean([v[:min_len] for v in vecs], axis=0)
-                    mean_norm = np.linalg.norm(mean_gamma)
-                    mean_gamma = mean_gamma / mean_norm if mean_norm > 1e-12 else None
+                    n_vecs = len(vecs)
+                    mean_gamma = [sum(v[i] for v in vecs) / n_vecs for i in range(min_len)]
+                    mean_norm = math.sqrt(sum(x * x for x in mean_gamma))
+                    mean_gamma = ([x / mean_norm for x in mean_gamma]
+                                  if mean_norm > 1e-12 else None)
                 else:
                     mean_gamma = None
                 for o in self.method.organisms:
                     gamma_mag, gamma_cos = 0.0, 0.0
                     if o.id in gammas:
                         g = gammas[o.id]
-                        gamma_mag = float(np.linalg.norm(g))
+                        gamma_mag = float(math.sqrt(sum(x * x for x in g)))
                         if mean_gamma is not None:
                             ml = min(len(g), len(mean_gamma))
-                            gamma_cos = float(np.dot(g[:ml], mean_gamma[:ml]))
+                            gamma_cos = float(sum(a * b for a, b in zip(g[:ml], mean_gamma[:ml])))
                     oid = hash(o.id) & 0x7FFFFFFF if isinstance(o.id, str) else int(o.id)
                     self.method.lib.am_method_push_organism(
                         oid, ctypes.c_float(o.entropy), ctypes.c_float(o.syntropy),
@@ -1317,7 +1348,8 @@ class Mycelium:
             lines.append("alignment with organisms:")
             for o in self.method.organisms:
                 if o.gamma_direction and len(o.gamma_direction) >= 8:
-                    g = np.frombuffer(o.gamma_direction[:self.gamma.DIM * 8], dtype=np.float64)
+                    raw = o.gamma_direction[:self.gamma.DIM * 8]
+                    g = list(struct.unpack(f"<{len(raw) // 8}d", raw))
                     cos_val = self.gamma.cosine_with(g)
                     bar = "#" * int(abs(cos_val) * 20)
                     sign = "+" if cos_val >= 0 else "-"
