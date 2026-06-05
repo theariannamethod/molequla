@@ -273,15 +273,13 @@ the logit level, partly its neighbours'.
 The qualitative trace holds: voice samples stay coherent at the
 element-vocabulary level in every run, and the element identity is not
 washed out by cross-pollination — the graze mixes vocabulary; it does
-not dissolve gamma. (The only voice quotes reproduced in this paper are
-the §9 adult-stage samples below, which are committed verbatim in the
-run archive; earlier child-stage fragments are not quoted here because
-their generation text was not preserved in a citable artifact.)
+not dissolve gamma.
 
-By the §9 run (RTX 3090, 2026-06-04) — same architecture after full
-embryo→adult ontogenesis — the voice is no longer at the child-fragment
-level. Adult-stage samples from `capture/dna_snap/` of the §9 archive,
-one per organism:
+By the §9 run (RTX 3090, 2026-06-04), after full embryo→adult
+ontogenesis, the voice is no longer at the child-fragment level.
+Adult-stage samples from `capture/dna_snap/` of the §9 archive, one per
+organism (the last snapshot each organism wrote before shutdown — most
+recent, not selected for quality):
 
 > earth: «The path of least resistance is not lazy — it is efficient.
 > A river does not choose its bed. Gravity and geology choose it. The
@@ -322,12 +320,14 @@ structural notes:
    training, only the logit-level rank-decay boost as connective
    tissue. The mechanism's signature appears in produced text, not
    only in event logs.
-3. **Adult is voice-effective, not only architectural.** Reaching
-   `stage=5` (n_embd=320, 6 layers, 8 heads) is the architecture
-   side of adulthood; the prose above is the voice side. The
-   §1–§8 fragments earlier in this section are the same architecture
-   at child stage with no §9 training — the contrast is the
-   ontogenesis traversal that Result 6 measured.
+3. **No overlay scaffold.** The §9 run used cross-graze but not the
+   `--corpus-overlay` coherence pass — that overlay was scheduled as a
+   separate run (`PROJECT_LOG.md:1348`). So this adult-stage coherence
+   is the trained weights plus logit-level cross-graze, not an overlay
+   lifting an untrained voice. Reaching `stage=5` (n_embd=320, 6 layers,
+   8 heads) is the architecture side of adulthood; the prose above is
+   the voice side, produced without that crutch — which is the part a
+   skeptic should weigh most.
 
 The element asymmetry is also visible in the loss curve. At
 adolescent (embd=128) the bottom-of-warmup avg loss across the last
@@ -337,12 +337,14 @@ three notorch warmup-completes per organism is
 `grep -a` — the climb logs carry NUL bytes). The losses split into two
 clusters, not a four-way gradient: Water and Fire converge ~34–40%
 deeper than Air, while Earth and Air sit together (~1% apart) as the
-shallower pair — same architecture, same training regime, same
-corpus-exchange surface, the only difference gamma. The prose
+shallower pair. The architecture and training regime are shared, but
+the four element corpora are not — they differ in size (Earth's ~174K
+vs ~122–126K for the others) and in content by element, so the loss
+split is suggestive of identity but cannot be attributed to gamma
+alone; corpus size and predictability are confounds. The prose
 differences above (transformation, creative compression, formal
-analogy, geological lesson) are present in the loss curve as well:
-element identity is not only stylistic; it is measurable in training
-dynamics.
+analogy, geological lesson) echo in the loss curve, but the clean
+attribution to gamma needs a corpus-controlled run, named as open work.
 
 What is *not* yet established is the quantitative claim — that
 cross-graze accelerates convergence relative to graze-off. That
@@ -544,24 +546,15 @@ kernels were rewritten block-parallel (notorch commits `38d6b1a`,
 `bc02d83`, `66f3c0f`; merged to main as `eaae961`). On a dedicated
 child-stage verification pod the launch-bound fix lifted `nvidia-smi`
 utilization from 0% to 99% and throughput from 5–9 to 18–55 steps per
-second (`PROJECT_LOG.md`). In the §9 run itself — four organisms
-sharing one RTX 3090 at the generation-dominated upper stages —
-utilization held in the 0–20% band (min 0%, max 20%, **mean 3.7%**
-across 2,509 samples at ~5 s intervals in `capture/util.log`): the per-step
-dispatch flood was gone, but the wall-clock there is set by
-autoregressive generation and four-way contention for a single device,
-not by the training step. The per-stage tick scales with model size —
-Earth's notorch-burst throughput drops **146 → ~50 → ~20 → ~9.5**
-steps/s across embryo → infant → child → adolescent
-(`work_earth/train_climb_earth.log`) — so by the upper stages the time
-budget really is generation- and contention-dominated, not launch-bound.
-Nor is it the cooperative-scheduling lock: the §9 binary already carries
-the parallel-training gate (`9999723`, `CoordinateWarmup` off on CUDA,
-so all four organisms train and exchange in parallel — the same gate
-that sustains ~99% utilization in *training*-bound conditions on this
-3090). The 0–20% band is the generation-dominated upper stages
-specifically; the two figures do not contradict — they measure a
-training-bound colony and a generation-bound one.
+second (`PROJECT_LOG.md`). In the §9 run itself, `nvidia-smi` utilization held in the 0–20% band
+(min 0%, max 20%, mean 3.7% across 2,509 samples at ~5 s intervals,
+`capture/util.log`). At the upper stages the tick is set by
+autoregressive generation and four-way contention for one device, not
+the training step — Earth's notorch-burst throughput drops
+**146 → ~50 → ~20 → ~9.5** steps/s across embryo → infant → child →
+adolescent (`work_earth/train_climb_earth.log`) as the model grows. The
+99% figure earlier is the train-bound fix-verification pod; the §9
+colony is generation-bound. Different regimes, both measured.
 
 With both walls down, the colony climbed. All four organisms grew
 embryo → adolescent → teen → adult — the 320-dimensional, 6-layer,

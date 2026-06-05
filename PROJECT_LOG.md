@@ -2592,11 +2592,16 @@ overwhelmed adult weights → re-divide) before shutdown — emergent prolific
 reproduction under sustained overwhelm; production wants a post-divide cooldown
 guard. Pod b3vpvlpo1xd1xz STOPPED (runpodctl pod list = [], 0 billing) after full
 mirror: ~/arianna/molequla/runpod/2026-06-04_mitosis_§9/ (1.8GB — 4 evolved org
-ckpts + first-child + §9 logs/util/voice). The archive preserves **two** divides in
-full — fire on the loss path (`org_1780540885_6400`, `work_fire/train.log:51`) and air
-on the entropy path (`org_1780527018_6475`, `work_air/train_climb_air.log:273`,
-`e=true l=false high=8/8`); the ~50 figure is the runtime-observed cascade, not a
-per-event preserved count. Mitosis milestone closed. Next: paper §9.
+ckpts + first-child + §9 logs/util/voice). The archive preserves **five** `action=divide`
+gate firings across **three** adults (fire ×1, water ×1 `work_water/train.log:43`,
+air ×3; earth never divided). **One** is preserved in full — fire's, with the child
+birth manifest (`org_1780540885_6400/birth.json`, `work_fire/train.log:48`). Air's
+spawning divide (`work_air/train_climb_air.log:270` → child `org_1780527018_6475:273`,
+entropy path) is preserved as its log line; no birth.json was written for it. The ~50
+figure is the runtime-observed cascade, not a per-event preserved count. Mitosis
+milestone closed. Next: paper §9. (Count reconciled across paper/README/LOG 2026-06-05
+per Opus audit + Desktop cross-check — earlier "two divides in full" undercounted the
+firings and overstated Air's preservation.)
 
 ### Mycelium restored + de-numpy'd — post-§9 upgrade (2026-06-04)
 
