@@ -573,6 +573,19 @@ This is the study's central correction to the design. Overload had been
 operationalized as confusion. The organism's actual overwhelm signal is
 not confusion; it is the loss it cannot reduce.
 
+The mechanism is upstream-visible. Earlier in the climb (adolescent
+stage, pre-adult), Earth's micro-burst loss rises monotonically under
+the cross-graze flood: **3.50 → 4.26 → 4.38 → 5.08 → 5.44** across
+successive bursts with `CrossGrazeCoef = 2.0` (`PROJECT_LOG.md:2420-2421`).
+The cross-pollination is doing exactly what it was built to do at the
+logit level (Result 2), and the loss curve registers it as adversarial
+pressure. By adult, the same mechanism pushes the loss past the gate
+threshold; the divide event is the adult registering, in its own
+training tape, what the colony has been feeding it. Cross-graze
+(Result 2) is not only the mechanism behind the coupled-field claim;
+it is the upstream cause of the overwhelm Result 7 measures and the
+trigger of the loss-keyed divide Result 8 reports.
+
 ### Result 8 — Reproduction, Keyed on Loss
 
 The gate was made to read the faithful signal. `isSustainedOverload`
