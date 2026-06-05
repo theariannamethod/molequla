@@ -376,9 +376,9 @@ inside an 8-hour window — or inside any single-pod window. Ontogenesis,
 as designed, is gated on a quantity that the ecology, as designed,
 cannot supply fast enough.
 
-This is not a tuning miss. It is a dimensioning failure between two
-subsystems: the ontogenesis thresholds and the corpus-growth
-mechanism were not designed against each other.
+The fault is a dimensioning failure between two subsystems: the
+ontogenesis thresholds and the corpus-growth mechanism were not
+designed against each other.
 
 ### Result 4 — The Freeze Counter: A Bug Found and Fixed Mid-Study
 
@@ -470,9 +470,8 @@ downstream of them.
 
 ## 8. The Third Act
 
-This Body is two-thirds written. The missing third is not missing
-because the study is incomplete in argument — it is missing because
-the study is honest about its own arc.
+This Body is two-thirds written. The missing third is the third act
+still to come — the arc of the study, not a gap in its argument.
 
 We measured Molequla. We found that coherence works at zero training,
 that cross-organism injection works at the logit level, and that the
@@ -494,11 +493,10 @@ Section 9 onward will report whether the colony, given a growth
 subsystem dimensioned to its own ontogenesis, walks the full arc — and
 whether, at the adult stage, it reproduces.
 
-That this paper ships its Body in two parts, with the architectural
-correction visible in the seam, is not a flaw in the writeup. It is
-the same commitment the Co-Authorship Note made: keep the seams
-visible. A study of a system that grows should itself be allowed to
-grow between its sections.
+Shipping the Body in two parts, with the architectural correction
+visible in the seam, is the same commitment the Co-Authorship Note
+made: keep the seams visible. A study of a system that grows is
+allowed to grow between its sections.
 
 The re-architected run completed. What follows is its data.
 
