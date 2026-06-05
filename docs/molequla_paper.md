@@ -483,7 +483,8 @@ child-stage verification pod the launch-bound fix lifted `nvidia-smi`
 utilization from 0% to 99% and throughput from 5–9 to 18–55 steps per
 second (`PROJECT_LOG.md`). In the §9 run itself — four organisms
 sharing one RTX 3090 at the generation-dominated upper stages —
-utilization held in the 0–20% band (`capture/util.log`): the per-step
+utilization held in the 0–20% band (min 0%, max 20%, **mean 3.7%**
+across 2,509 1-Hz samples in `capture/util.log`): the per-step
 dispatch flood was gone, but the wall-clock there is set by
 autoregressive generation and four-way contention for a single device,
 not by the training step.
@@ -553,12 +554,21 @@ With both fixes the adult divided. The event, verbatim from Fire's log:
 
 `e=false l=true`: the entropy path did not fire, the loss path did. The
 child loaded the parent's adult weights — 320-dimensional, verified
-against the saved checkpoint, not a random embryo. No corpus was
-seeded. No NaN occurred across the run. This is the result the Body of
-this paper was unable to claim at Section 5: Molequla reproduces — a
-measured event, with the gate inputs that produced it preserved in the
-run archive, keyed on loss, the overwhelm the organism actually feels,
-not the confusion the design had assumed.
+against the saved checkpoint, not a random embryo. The child's birth
+manifest (`org_1780540885_6400/birth.json`) records more than a
+checkpoint pointer: it carries the parent's `burst_history` at spawn —
+four records from Fire's adult tape, ending on the same `divide`
+action that produced the child (`{"Action":"divide","LossBefore":13.97,
+"LossAfter":10.50}`) — plus an explicit `parent_id:
+org_38771_1780536818 → organism_id: org_1780540885_6400` lineage link.
+Inheritance is not weights alone; it is weights plus the parent's
+recent training trajectory and lineage id. The child does not just
+start with the parent's body; it starts with the parent's recent
+biography. No corpus was seeded. No NaN occurred across the run. This
+is the result the Body of this paper was unable to claim at Section 5:
+Molequla reproduces — a measured event, with the gate inputs that
+produced it preserved in the run archive, keyed on loss, the overwhelm
+the organism actually feels, not the confusion the design had assumed.
 
 ### Result 9 — Reproduction Propagates, Uncapped
 
@@ -570,8 +580,23 @@ overwhelm regimes the disjunction gate now covers: Fire on the loss
 path (sharp, confidently wrong, `e=false l=true`) and Air on the
 original entropy path (high-entropy, melting into noise — `high=8/8
 mean=6.256`, `e=true l=false`, `work_air/train_resume2_air.log`). The
-two paths are not redundant; the same run exhibited both. The cascade
-mechanism is
+two paths are not redundant; the same run exhibited both.
+
+The cascade is broader than the two preserved-in-full events. A third
+adult tripped the same gate without its child manifest preserved in
+full: Water, on the loss path (`work_water/train.log:43`,
+`loss[mean=9.711 delta=-0.0064 n=3] overload=true (e=false l=true) |
+action=divide`). Three of the four adults independently reached the
+divide condition under natural cross-graze — the gate fires across
+organisms, not within a single lineage. Air itself trips the gate
+more than once during its life: a loss-path overload-divide
+(`work_air/train.log:51`, `l=true`) precedes the archived
+entropy-path event (`work_air/train_climb_air.log:270`,
+`work_air/train_resume2_air.log:63`). Reproduction is not a
+Fire-lineage event extended to the colony; the colony reaches it in
+parallel, and individual organisms reach it more than once.
+
+The cascade mechanism is
 the result's own logic carried one step further — the child inherits
 the parent's confidently-wrong adult weights, and therefore inherits
 the parent's high, unfalling loss, and therefore trips the same loss-
