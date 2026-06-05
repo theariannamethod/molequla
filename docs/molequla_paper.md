@@ -112,9 +112,12 @@ Both default off. The measurement compares on versus off.
 **The implementations.** Molequla exists in four languages — Go, C,
 Rust, JavaScript — sharing the design. The ecology runs measured here
 use the Go implementation with a CGO bridge into the Arianna Method's
-AML C library for the autograd inner loop. Canonical builds need only
+autograd. The §1–§8 runs used AML/C as the autograd inner loop; the
+§9 rework promotes the **notorch tape** (Chuck) to canonical and keeps
+AML/C as the fallback (`--trainer aml`). Canonical builds need only
 libc; an optional `--gpu` opt-in on Linux links cuBLAS for accelerated
-runs (Section 5.3).
+runs (Section 5.3, with the post-§9 training pipeline in Section 9 /
+Result 6).
 
 ## 4. Experimental Frame
 
@@ -200,6 +203,14 @@ correct framing is that the GPU's value is on the larger matvecs of
 the later stages, and the injection mechanisms' real effect is on
 training dynamics through the DNA pipeline, not on raw inference
 latency.
+
+This section describes the **pre-§9** GPU forward path — inference-only
+acceleration with training kept on CPU. The §9 rework (Result 6) moves
+training onto the GPU as well: the canonical trainer is now the
+**notorch tape** (Chuck optimizer) with GPU-resident backward kernels
+and a launch-bound fix; the AML C autograd above becomes the fallback
+(`--trainer aml`). See README §178 and Result 6 for the post-§9
+training pipeline.
 
 ### 5.4 Ecology measurement protocol
 

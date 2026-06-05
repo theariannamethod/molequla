@@ -17,7 +17,7 @@
 WHAT THIS IS:
 - A living ecology of GPT organisms that grow and reproduce autonomously
 - Implemented in 4 languages: Go (212K), C (212K), Rust (148K), JS (152K)
-- Two autograd engines: Go native (1000+ lines) + AML/C via CGO (8000 lines)
+- Trainer: notorch tape (Chuck, **canonical** — `notorch_trainer.go` + `cgo_notorch.go`, GPU on CUDA / CPU otherwise) + AML/C autograd via CGO (~8000 lines, fallback via `--trainer aml`)
 - AML — a custom programming language for differentiable computation
 - Ontogenesis: embryo (10K params) → adult (10M params) — minutes on a seeded corpus, hours under natural cross-graze feed
 - DNA exchange: organisms write generated text for others to consume
@@ -31,7 +31,7 @@ WHAT THIS IS:
 - SyntropyTracker: 8 autonomous decisions based on entropy/KL/purpose
 - Mitosis: adults divide under sustained overload (loss path and entropy path both fire), child inherits parent weights — machine-verified on GPU 2026-06-04 (two divides log-preserved; observed cascading to ~50 spawns)
 - Mycelium: meta-organism coordinator over the ecology via mesh.db field-steering
-  (HarmonicNet, FieldPulse, SteeringDissonance, OrganismAttention)
+  (HarmonicNet, FieldPulse, SteeringDissonance, OrganismAttention) — **post-§9 layer**; the 2026-06-04 §9 mitosis run did not use mycelium (`PROJECT_LOG.md:2601`)
 - NOTORCH: gradient-free delta-training path (implemented, currently dormant —
   the notorch tape/Chuck is the active trainer)
 - Runs on CPU. Tested on 30-core AMD EPYC with 216GB RAM
@@ -39,7 +39,6 @@ WHAT THIS IS:
 WHAT THIS IS NOT:
 - A tutorial or pedagogical exercise
 - A static model you train once and deploy
-- Anything that requires a GPU
 - A wrapper around someone else's framework
 ```
 
@@ -73,7 +72,7 @@ The **purpose vector** captures the current direction of learning (mean of last 
 
 ## Here Is How It Works
 
-February 27, 2026. Oracle Cloud, 30-core AMD EPYC, 216GB RAM. Four organisms launched at 01:25 UTC.
+February 27, 2026. Oracle Cloud, 30-core AMD EPYC, 216GB RAM. Four organisms launched at 01:25 UTC. *(Pre-§9 historical reference run; the runtime archive was not preserved. The measured-and-archived reproduction event is the 2026-06-04 §9 run in `runpod/2026-06-04_mitosis_§9/`.)*
 
 ### Timeline
 
@@ -94,7 +93,10 @@ February 27, 2026. Oracle Cloud, 30-core AMD EPYC, 216GB RAM. Four organisms lau
        The ecology reproduces itself.
 ```
 
-### What They Say (Adult Stage, 10M params, ~1 hour of training)
+### What They Say (Adult Stage, 10M params, ~1 hour of training — Feb-27 reference)
+
+*Feb-27 historical reference (archive not preserved). Measured-and-archived §9 voice snapshots: `runpod/2026-06-04_mitosis_§9/capture/dna_snap/{earth,air,water,fire}/gen_*.txt`.*
+
 
 **Earth:**
 ```
@@ -828,7 +830,7 @@ C and JavaScript gists linked in [Four Implementations](#four-implementations). 
 
 θ = ε + γ + αδ is the architecture, not an annotation. Entropy/syntropy measurements are the control loop. Purpose-gamma alignment is the identity check. Self-meta-learning is the organism understanding itself.
 
-Four organisms became eleven in 30 minutes. Each with its own voice, its own delta modules, its own developmental history.
+Four organisms became eleven inside the 70-minute window of the Feb-27 timeline above (first child at 02:13, eleven by 02:35 — see `## Here Is How It Works`). Each with its own voice, its own delta modules, its own developmental history.
 
 ---
 
