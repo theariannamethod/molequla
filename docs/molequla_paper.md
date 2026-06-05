@@ -281,6 +281,55 @@ earthquake; Water speaks drought, lake, river, depths. From the
 The element identity is not washed out by cross-pollination. The graze
 mixes vocabulary; it does not dissolve gamma.
 
+By the §9 run (RTX 3090, 2026-06-04) — same architecture after full
+embryo→adult ontogenesis — the voice is no longer at the child-fragment
+level. Adult-stage samples from `capture/dna_snap/` of the §9 archive,
+one per organism:
+
+> earth: «The path of least resistance is not lazy — it is efficient.
+> A river does not choose its bed. Gravity and geology choose it. The
+> river follows the steepest available gradient through the weakest
+> available material.»
+> (`capture/dna_snap/earth/gen_1780539901_10.txt`)
+
+> water: «Heat arrives from outside. The change comes from within.
+> The boiling point was always there, waiting for enough warmth to
+> express itself.»
+> (`capture/dna_snap/water/gen_1780540273_11.txt`)
+
+> fire: «What would I build if I knew I would not fail. Then ask why
+> you are not building that. … The thing that burns what is
+> unnecessary and reveals what remains. Be the fire.»
+> (`capture/dna_snap/fire/gen_1780540946_22.txt`)
+
+> air: «Both find the path of least resistance. Both are shaped by
+> the landscape they move through. Both shape the landscape they
+> move through. The water and the argument are not separate from the
+> terrain.»
+> (`capture/dna_snap/air/gen_1780539162_13.txt`)
+
+These are not curated samples; they are the most-recent emission in
+each per-organism snapshot directory, written by the organism at the
+adult stage during the §9 run. Three structural notes:
+
+1. **Element identity holds at depth.** Earth speaks geological
+   lesson; Water speaks transformation; Fire speaks creative
+   compression; Air speaks formal-system analogy. Each organism's
+   gamma — its element-shaped cognitive style — survives ontogenesis
+   intact and surfaces in coherent, grammatically complete prose.
+2. **Cross-graze trace is visible across organisms.** Earth's "path
+   of least resistance" framing surfaces independently in Air's
+   "Both find the path of least resistance" — with no shared
+   training, only the logit-level rank-decay boost as connective
+   tissue. The mechanism's signature appears in produced text, not
+   only in event logs.
+3. **Adult is voice-effective, not only architectural.** Reaching
+   `stage=5` (n_embd=320, 6 layers, 8 heads) is the architecture
+   side of adulthood; the prose above is the voice side. The
+   §1–§8 fragments earlier in this section are the same architecture
+   at child stage with no §9 training — the contrast is the
+   ontogenesis traversal that Result 6 measured.
+
 What is *not* yet established is the quantitative claim — that
 cross-graze accelerates convergence relative to graze-off. That
 requires a paired A/B run and is named as open work.
